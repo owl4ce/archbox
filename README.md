@@ -60,7 +60,7 @@ sudo archroot -c fill-anything-hahah
 ```
 
 ### Mounting chroot directory (ᴀᴘɪ ꜰɪʟᴇꜱʏꜱᴛᴇᴍꜱ)
-> Skip this if you have just finished installing the chrooted environment for the first time.
+> Skip this if you have just finished installing the chroot environment for the first time.
 ```bash
 archroot -m
 ```
