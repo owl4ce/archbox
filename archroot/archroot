@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+source /etc/archroot.conf
+
+copyresolv(){
+    $PRIV $INSTALL_PATH/copyresolv
+}
+
+storeenv(){
+    echo $DBUS_SESSION_BUS_ADDRESS > /tmp/archroot_dbus_session_address
+    echo $XDG_RUNTIME_DIR > /tmp/archroot_xdg_runtime_dir
+}
+
+asroot(){
+    [[ $EUID -ne 0 ]] && err "Run this as root!"
+}
+
+checkdep(){
+    which $1 >/dev/null 2>&1 || err "$1 is not installed. Please install it first!"
+}
+
+help_text(){
+cat << EOF
+USAGE: archroot --option
+
+OPTIONS:
+  -c, --create URL      Creates a chroot environment.
+  -m, --mount           Mount chroot (API filesystems) directory.
+  -u, --unmount         Unmount chroot (API filesystems) directory.
+  -e, --enter           Enters chroot environment.
+  -h, --help            Displays this help message.
+
+https://github.com/owl4ce/archroot
+https://github.com/lemniskett/archbox
+
+EOF
+}
+
+err(){
+    echo "$(tput bold)$(tput setaf 1)==> $@ $(tput sgr0)"
+    exit 1
+}
+
+msg(){
+    echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
+}
+
+case $1 in
+    -c|--create)
+        asroot
+        [[ -z $2 ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
+        cd $INSTALL_PATH
+        msg "Downloading Arch Linux tarball..."
+        [[ ! -f ./archlinux.tar.gz ]] && checkdep wget && wget -q --show-progress -O archlinux.tar.gz $2 && \
+        [[ -f ./archlinux.tar.gz ]] && msg "Arch Linux tarball downloaded"
+        msg "Extracting the tarball..."
+        rm -r ./root.x86_64 2> /dev/null
+        tar xzf archlinux.tar.gz 2> /dev/null
+        msg "Enabling internet connection in chroot environment..."
+        cp /etc/resolv.conf $CHROOT/etc/resolv.conf
+        msg "You will need to edit which mirror you want to use, uncomment needed mirrors and save it!"
+        echo -n "Editor of your choice (e.g: nano): "
+        read TEXT_EDITOR
+        checkdep $TEXT_EDITOR
+        $TEXT_EDITOR $CHROOT/etc/pacman.d/mirrorlist || exit 1
+        msg "Disabling Pacman's CheckSpace..."
+        checkdep sed
+        sed -i 's_CheckSpace_#CheckSpace_' $CHROOT/etc/pacman.conf
+        msg "Mounting necessary filesystems..."
+        mount -Rv /dev $CHROOT/dev
+        mount --make-rslave -v $CHROOT/dev
+        mount -Rv /home $CHROOT/home
+        mkdir -pv $CHROOT/lib/modules
+        mount -Rv /lib/modules $CHROOT/lib/modules
+        mount -vt proc /proc $CHROOT/proc
+        mount -Rv /run $CHROOT/run
+        mount -Rv /sys $CHROOT/sys
+        mount --make-rslave -v $CHROOT/sys
+        mount -Rv /tmp $CHROOT/tmp
+        mkdir -pv $CHROOT/usr/share/fonts
+        mkdir -pv $CHROOT/usr/share/icons
+        mkdir -pv $CHROOT/usr/share/themes
+        mkdir -pv $CHROOT/var/lib/dbus
+        mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
+        echo "$USER" > /tmp/archroot_localuser
+        cp $INSTALL_PATH/archsetup $CHROOT/archsetup
+        cp $INSTALL_PATH/installyay $CHROOT/home/$USER/installyay
+        chroot $CHROOT /bin/bash -c "./archsetup"
+        msg "Archroot installation was successful"
+    ;;
+    -m|--mount)
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            if mount | grep "$CHROOT/dev" > /dev/null; then
+                echo "Mounted: $CHROOT/dev"
+            else
+                echo "Not mounted: $CHROOT/dev"
+                $PRIV mount -Rv /dev $CHROOT/dev
+                $PRIV mount --make-rslave -v $CHROOT/dev
+            fi
+            if mount | grep "$CHROOT/home" > /dev/null; then
+                echo "Mounted: $CHROOT/home"
+            else
+                echo "Not mounted: $CHROOT/home"
+                $PRIV mount -Rv /home $CHROOT/home
+            fi
+            if mount | grep "$CHROOT/usr/lib/modules" > /dev/null; then
+                echo "Mounted: $CHROOT/lib/modules"
+            else
+                echo "Not mounted: $CHROOT/lib/modules"
+                $PRIV mount -Rv /lib/modules $CHROOT/lib/modules
+            fi
+            if mount | grep "$CHROOT/proc" > /dev/null; then
+                echo "Mounted: $CHROOT/proc"
+            else
+                echo "Not mounted: $CHROOT/proc"
+                $PRIV mount -vt proc /proc $CHROOT/proc
+            fi
+            if mount | grep "$CHROOT/run" > /dev/null; then
+                echo "Mounted: $CHROOT/run"
+            else
+                echo "Not mounted: $CHROOT/run"
+                $PRIV mount -Rv /run $CHROOT/run
+            fi
+            if mount | grep "$CHROOT/sys" > /dev/null; then
+                echo "Mounted: $CHROOT/sys"
+            else
+                echo "Not mounted: $CHROOT/sys"
+                $PRIV mount -Rv /sys $CHROOT/sys
+                $PRIV mount --make-rslave -v $CHROOT/sys
+            fi
+            if mount | grep "$CHROOT/tmp" > /dev/null; then
+                echo "Mounted: $CHROOT/tmp"
+            else
+                echo "Not mounted: $CHROOT/tmp"
+                $PRIV mount -Rv /tmp $CHROOT/tmp
+            fi
+            if mount | grep "$CHROOT/var/lib/dbus" > /dev/null; then
+                echo "Mounted: $CHROOT/var/lib/dbus"
+            else
+                echo "Not mounted: $CHROOT/var/lib/dbus"
+                $PRIV mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
+            fi
+            err "Chroot directory: already mounted"
+        else
+            msg "Mounting necessary filesystems..."
+            $PRIV mount -Rv /dev $CHROOT/dev
+            $PRIV mount --make-rslave -v $CHROOT/dev
+            $PRIV mount -Rv /home $CHROOT/home
+            $PRIV mount -Rv /lib/modules $CHROOT/lib/modules
+            $PRIV mount -vt proc /proc $CHROOT/proc
+            $PRIV mount -Rv /run $CHROOT/run
+            $PRIV mount -Rv /sys $CHROOT/sys
+            $PRIV mount --make-rslave -v $CHROOT/sys
+            $PRIV mount -Rv /tmp $CHROOT/tmp
+            $PRIV mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
+        fi
+    ;;
+    -u|--unmount)
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            msg "Unmounting necessary filesystems..."
+            $PRIV umount --recursive -v $CHROOT/dev
+            $PRIV umount --recursive -v $CHROOT/home
+            $PRIV umount --recursive -v $CHROOT/lib/modules
+            $PRIV umount --recursive -v $CHROOT/proc
+            $PRIV umount --recursive -v $CHROOT/run
+            $PRIV umount --recursive -v $CHROOT/sys
+            $PRIV umount --recursive -v $CHROOT/tmp
+            $PRIV umount --recursive -v $CHROOT/var/lib/dbus
+            msg "Please check status above!"
+            msg "If failed to unmount (e.g: dev: target is busy), please reboot host (safe), don't use fuser!"
+            msg "If failed to unmount (e.g: run: target is busy), try \"archroot sudo serviced stop\" or reboot host (safe), don't use fuser!"
+        else
+            if mount | grep "$CHROOT/dev" > /dev/null; then
+                echo "Mounted: $CHROOT/dev"
+            else
+                echo "Not mounted: $CHROOT/dev"
+            fi
+            if mount | grep "$CHROOT/home" > /dev/null; then
+                echo "Mounted: $CHROOT/home"
+            else
+                echo "Not mounted: $CHROOT/home"
+            fi
+            if mount | grep "$CHROOT/usr/lib/modules" > /dev/null; then
+                echo "Mounted: $CHROOT/lib/modules"
+            else
+                echo "Not mounted: $CHROOT/lib/modules"
+            fi
+            if mount | grep "$CHROOT/proc" > /dev/null; then
+                echo "Mounted: $CHROOT/proc"
+            else
+                echo "Not mounted: $CHROOT/proc"
+            fi
+            if mount | grep "$CHROOT/run" > /dev/null; then
+                echo "Mounted: $CHROOT/run"
+            else
+                echo "Not mounted: $CHROOT/run"
+            fi
+            if mount | grep "$CHROOT/sys" > /dev/null; then
+                echo "Mounted: $CHROOT/sys"
+            else
+                echo "Not mounted: $CHROOT/sys"
+            fi
+            if mount | grep "$CHROOT/tmp" > /dev/null; then
+                echo "Mounted: $CHROOT/tmp"
+            else
+                echo "Not mounted: $CHROOT/tmp"
+            fi
+            if mount | grep "$CHROOT/var/lib/dbus" > /dev/null; then
+                echo "Mounted: $CHROOT/var/lib/dbus"
+            else
+                echo "Not mounted: $CHROOT/var/lib/dbus"
+            fi
+            err "Chroot directory: not yet mounted"
+        fi
+    ;;
+    -e|--enter)
+        checkdep xhost
+        xhost +local: > /dev/null
+        storeenv
+        $PRIV $INSTALL_PATH/copyresolv
+        $PRIV $INSTALL_PATH/command enter
+	;;
+    -h|--help)
+        help_text
+    ;;
+    "")
+        help_text
+    ;;
+    -*)
+        err "Unknown option: $1"
+    ;;
+    *)
+        checkdep xhost
+        xhost +local: > /dev/null
+        storeenv
+        $PRIV $INSTALL_PATH/copyresolv
+        COMMAND=$(echo $@ | tr ' ' '\ ')
+        $PRIV $INSTALL_PATH/command $COMMAND
+    ;;
+esac

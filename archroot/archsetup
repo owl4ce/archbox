@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+L_USER="$(cat /tmp/archroot_localuser)"
+
+err(){
+    echo "$(tput bold)$(tput setaf 1)==> $@ $(tput sgr0)"
+    exit 1
+}
+
+msg(){
+    echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
+}
+
+msg "Initializing pacman keyrings..."
+pacman-key --init
+pacman-key --populate archlinux
+msg "Installing essential packages..."
+pacman -Syu base base-devel xorg pulseaudio nano neofetch imagemagick imlib2 w3m git --noconfirm
+msg "Installing servicectl..."
+mkdir -p /usr/local/share/servicectl/enabled
+curl -L 'https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl' > /usr/local/share/servicectl/servicectl 2>/dev/null
+curl -L 'https://raw.githubusercontent.com/lemniskett/servicectl/master/serviced' > /usr/local/share/servicectl/serviced 2>/dev/null
+chmod +x /usr/local/share/servicectl/service{d,ctl}
+ln -s /usr/local/share/servicectl/servicectl /usr/local/bin/servicectl
+ln -s /usr/local/share/servicectl/serviced /usr/local/bin/serviced
+msg "Setting up locale..."
+sed -i 's\#en_US.UTF-8 UTF-8.*\en_US.UTF-8 UTF-8\' /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+msg "Setting up timezone..."
+echo "Enter your timezone, for example: \"Asia/Jakarta\": " 
+while true; do
+	read TIMEZONE && \
+		[[ -f /usr/share/zoneinfo/$TIMEZONE ]] && \
+		ln -s /etc/localtime && \
+		ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
+		break || err "Timezone not found"
+done
+msg "Creating user account..."
+useradd -M $L_USER
+gpasswd -a $L_USER wheel
+echo "Enter password for root"
+while true; do
+	passwd && break
+done
+echo "Enter password for $USER"
+while true; do
+	passwd $L_USER && break
+done
+sed -i 's_# %wheel ALL=(ALL) NOPASSWD: ALL_%wheel ALL=(ALL) NOPASSWD: ALL_' /etc/sudoers
+chown $L_USER:$L_USER /home/$L_USER/installyay
+echo "[[ -f /etc/arch-release ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.bashrc
+echo "[[ -f /etc/arch-release ]] && cd ~" >> /home/$L_USER/.bashrc
+[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/arch-release ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.zshrc
+[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/arch-release ]] && cd ~" >> /home/$L_USER/.zshrc
+

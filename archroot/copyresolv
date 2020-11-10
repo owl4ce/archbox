@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source /etc/archroot.conf
+
+cp /etc/resolv.conf $CHROOT/etc/resolv.conf
