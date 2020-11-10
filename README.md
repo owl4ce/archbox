@@ -1,7 +1,7 @@
 <p align="center"><a name="top" href="#octocat-why-chroot-"><img width="60%" src="https://i.ibb.co/DgDn47J/archroot.png"></a></p>
 <p align="center">Install Arch Linux inside chroot environment using same user environment</p>
-<p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center">Pulseaudio, d-bus, and service works like a charm</p>
+<p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead (not everything can work normally)</p>
 <p align="center"><b>EXPERIMENTAL</b></p>
 <p align="center">Please read this carefully first!</p>
 
