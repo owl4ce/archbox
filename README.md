@@ -13,7 +13,7 @@ Ever since I'm running some niche distros like Void, Solus, I had a problem find
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
-> **Note**: The screenshot for neofetch above/beside is a modification of this script, because I still have an Artix Linux* partition with same user but with different homedir. That's why the packages are so much more.
+> **Note**: The screenshot for neofetch above/beside is a modification of this script, because I still have an Artix Linux partition with same user but with different homedir. That's why the packages are so much more.
 
 ## :syringe: Installation 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
@@ -24,7 +24,7 @@ git clone https://github.com/owl4ce/archroot.git && sudo ./archroot/install.sh
 > - `archroot.conf` will be installed to `/etc/archroot.conf`.
 
 ### Adding environment variables
-Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd) in `archroot.conf`.
+Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd) in `archroot.conf`:
 ```cfg
 # Put your desired environment variable here, for example
 # ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct"
