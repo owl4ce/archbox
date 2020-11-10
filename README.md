@@ -197,9 +197,9 @@ Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
 ```
 It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch the Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
-Arch Linux|Gentoo/Linux
+Chroot Environment|Host Environment
 |--|--|
-![Arch](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
+![Artix](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
 
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by a `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
