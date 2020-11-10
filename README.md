@@ -79,11 +79,11 @@ archroot --enter
 > You will be automatically asked for root password.
 
 ### Executing commands chroot environment directly
-> You will be automatically asked for root password.
 ```bash
 archroot command
 ```
 **Example command**: neofetch
+> You will be automatically asked for root password.
 
 ## :bulb: Tips
 ### Bypass root password question
