@@ -156,7 +156,7 @@ into:
 Archroot will not read fonts, themes, and icons from the host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `/home/username/.fonts` (also .themes and .icons) instead.
 
 ### Installing yay AUR Helper
-Just run this in a chroot environment (`--enter`),instead of executing commands directly:
+Just run this in chroot environment (`--enter`), instead of executing commands directly:
 ```bash
 ~/installyay
 ```
@@ -170,6 +170,12 @@ archroot sudo pacman -S rofi
 Basic usage:
 ```bash
 archroot rofi -show drun
+```
+
+Then you can add it as a DE/WM keybind (e.g: openbox window manager):
+> Need bypass root password question.
+```bash
+bash -c 'archroot rofi -show drun'
 ```
 
 **If you use my [dotfiles](https://github.com/owl4ce/dotfiles), I suggest following this.**
