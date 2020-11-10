@@ -157,7 +157,7 @@ into:
 Archroot will not read fonts, themes, and icons from the host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `/home/username/.fonts` (also .themes and .icons) instead.
 
 ### Installing yay AUR Helper
-Just run this in chroot environment (`--enter`), instead of executing commands directly:
+Just run this in chroot environment (`--enter`):
 ```bash
 ~/installyay
 ```
