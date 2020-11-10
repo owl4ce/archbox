@@ -48,12 +48,12 @@ https://github.com/lemniskett/archbox
 
 ```
 ### Installing chroot environment
-Download link see [here](https://www.archlinux.org/download/). Then do
+Download link see [here](https://www.archlinux.org/download/). Then do,
 ```bash
 sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 ```
 **Example link**: http://mirrors.evowise.com/archlinux/iso/2020.11.01/archlinux-bootstrap-2020.11.01-x86_64.tar.gz  
-**Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/ archroot/`. Then do
+**Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/archroot/`. Then do,
 ```bash
 sudo archroot -c fill-anything-hahah
 ```
