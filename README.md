@@ -3,6 +3,7 @@
 <p align="center">Systemctl isn't working inside chroot environment, so it will use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center">Pulseaudio, d-bus, and service works like a charm</p>
 <p align="center"><b>EXPERIMENTAL</b></p>
+<p align="center">please read this carefully first!</p>
 
 ##  
 
