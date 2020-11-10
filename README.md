@@ -13,7 +13,7 @@ Ever since I'm running some niche distros like Void, Solus, I had a problem find
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
-> The screenshot for neofetch above/beside is a modification of this script, because I still have an **Artix Linux** partition with same user but with different homedir. That's why the packages are so much more.
+> **Note**: The screenshot for neofetch above/beside is a modification of this script, because I still have an Artix Linux* partition with same user but with different homedir. That's why the packages are so much more.
 
 ## :syringe: Installation 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
@@ -37,8 +37,8 @@ USAGE: archroot --option
 
 OPTIONS:
   -c, --create URL      Creates a chroot environment.
-  -m, --mount           Mount chroot directory.
-  -u, --unmount         Unmount chroot directory.
+  -m, --mount           Mount chroot (API filesystems) directory.
+  -u, --unmount         Unmount chroot (API filesystems) directory.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
 
@@ -51,9 +51,14 @@ Download link see [here](https://www.archlinux.org/download/). Then do
 ```bash
 sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 ```
-**Example link**: http://mirrors.evowise.com/archlinux/iso/2020.11.01/archlinux-bootstrap-2020.11.01-x86_64.tar.gz
+**Example link**: http://mirrors.evowise.com/archlinux/iso/2020.11.01/archlinux-bootstrap-2020.11.01-x86_64.tar.gz  
+**Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/ archroot/`. Then do
+```bash
+sudo archroot -c fill-anything-hahah
+```
 
 ### Mounting chroot directory (ᴀᴘɪ ꜰɪʟᴇꜱʏꜱᴛᴇᴍꜱ)
+> Skip this if you have just finished installing the chrooted environment for the first time.
 ```bash
 archroot -m
 ```
@@ -66,7 +71,7 @@ archroot -u
 > You will be automatically asked for root password.
 
 ### Entering chroot environment
-> Make sure you have mounted chroot directory before entering chroot, otherwise it will cause a system malfunction.
+> Make sure you have mounted chroot directory before entering chroot, otherwise it will cause chroot system malfunction.
 ```bash
 archroot --enter
 ```
@@ -99,7 +104,7 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
 
 ### Include pacman package manager from Archroot into neofetch host
 ```bash
-sudo $EDITOR `whereis neofetch | awk -F' ' '{print $2}'`
+sudo $EDITOR `which neofetch`
 ```
 Then edit this section:
 ```cfg
@@ -146,6 +151,15 @@ into:
 1325             has "pacman" && tot pacman
 ```
 
+### Shared fonts, themes, and icons
+Archroot will not read fonts, themes, and icons from the `/usr/share` directory from the host. Because to avoid conflict, Archroot must have its own `/usr/share`. If you want to share from the host, you can use `/home/username/.fonts` (also .themes and .icons) instead.
+
+### Installing yay AUR Helper
+Just run:
+```bash
+~ / installyay
+```
+
 ## :confetti_ball: Improving usage
 ### Using rofi as application launcher
 First, install rofi in the Archroot.
@@ -175,6 +189,12 @@ Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
 ```
 It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch the Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
-Artix Linux|Gentoo/Linux
+Arch Linux|Gentoo/Linux
 |--|--|
-![Artix](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
+![Arch](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
+
+## :gun: Uninstall Archroot completely
+The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by a `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
+```bash
+sudo install.sh --uninstall
+```
