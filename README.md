@@ -202,7 +202,7 @@ Chroot Environment|Host Environment
 ![Artix](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
 
 ## :gun: Uninstall Archroot completely
-The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by a `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
+The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
 ```bash
 sudo install.sh --uninstall
 ```
