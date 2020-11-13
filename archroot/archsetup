@@ -38,11 +38,11 @@ done
 msg "Creating user account..."
 useradd -M $L_USER
 gpasswd -a $L_USER wheel
-echo "Enter password for root"
+echo "Enter new password for root"
 while true; do
 	passwd && break
 done
-echo "Enter password for $L_USER"
+echo "Enter new password for $L_USER"
 while true; do
 	passwd $L_USER && break
 done
