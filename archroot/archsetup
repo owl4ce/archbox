@@ -42,7 +42,7 @@ echo "Enter password for root"
 while true; do
 	passwd && break
 done
-echo "Enter password for $USER"
+echo "Enter password for $L_USER"
 while true; do
 	passwd $L_USER && break
 done

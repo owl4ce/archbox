@@ -9,7 +9,7 @@
 
 ### :octocat: Why chroot? <img alt="Visits" align="right" src="https://badges.pufler.dev/visits/owl4ce/archroot?style=flat-square&label=&color=success&logo=GitHub&logoColor=white&labelColor=373e4d"/>
 
-<img src="https://i.ibb.co/s59mrC4/preview.png" alt="preview" align="right" width="400px">
+<img src="https://i.ibb.co/C8KqrVF/GENTOO.png" alt="preview" align="right" width="400px">
 
 Ever since I'm running some niche distros like Void, Solus, I had a problem finding softwares I need in their not-so-large repositories, also I don't like how flatpak and snap works. so i decided to create an Arch Linux chroot environment everytime I distrohop. Why Arch Linux? They have a really, really good repositories, oh and don't mention how big AUR is. [@lemniskett](https://github.com/lemniskett)
 
