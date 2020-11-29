@@ -10,9 +10,7 @@
 
 ### :octocat: Why chroot? <img alt="Visits" align="right" src="https://badges.pufler.dev/visits/owl4ce/archroot?style=flat-square&label=&color=success&logo=GitHub&logoColor=white&labelColor=373e4d"/>
 
-<img src="https://i.ibb.co/C8KqrVF/GENTOO.png" alt="preview" align="right" width="400px">
-
-Ever since I'm running some niche distros like Void, Solus, I had a problem finding softwares I need in their not-so-large repositories, also I don't like how flatpak and snap works. so i decided to create an Arch Linux chroot environment everytime I distrohop. Why Arch Linux? They have a really, really good repositories, oh and don't mention how big AUR is. [@lemniskett](https://github.com/lemniskett)
+<img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-10c7a4fd-ba9d-46ec-8193-559793ddc2c9.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLTEwYzdhNGZkLWJhOWQtNDZlYy04MTkzLTU1OTc5M2RkYzJjOS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.rg0jBXM8ozYxUuJqLe7Ogjdpzh2ZjdLWm-SJMkYTgk0" alt="preview" align="right" width="400px">
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
@@ -196,9 +194,9 @@ Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
 ```
 It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch the Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
-Chroot Environment|Host Environment
+Host Environment|Chroot Environment
 |--|--|
-![Artix](https://i.ibb.co/NFkVBG8/artix.png)|![Gentoo](https://i.ibb.co/N1CcPPZ/gentoo.png)
+![Gentoo](https://i.ibb.co/NFPvs1c/2020-11-28-183254-1366x768-scrot.png)|![Arch](https://i.ibb.co/wymGmqr/2020-11-28-183328-1366x768-scrot.png)
 
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
