@@ -14,7 +14,7 @@
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
-<br>
+Thanks to [@lemniskett](https://github.com/lemniskett)
 
 ## :syringe: Installation 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
@@ -201,7 +201,7 @@ Host Environment|Chroot Environment
 ![Gentoo](https://i.ibb.co/NFPvs1c/2020-11-28-183254-1366x768-scrot.png)|![Arch](https://i.ibb.co/wymGmqr/2020-11-28-183328-1366x768-scrot.png)
 
 ## :gun: Uninstall Archroot completely
-The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`. This is why I don't like automount when the host system is booting, it will help when I want to remove Archroot which just simply reboots the host system to avoid serious problems.
+The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`.
 ```bash
 sudo install.sh --uninstall
 ```
