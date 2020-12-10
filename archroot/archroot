@@ -76,9 +76,6 @@ case $1 in
         mount -Rv /sys $CHROOT/sys
         mount --make-rslave -v $CHROOT/sys
         mount -Rv /tmp $CHROOT/tmp
-        mkdir -pv $CHROOT/usr/share/fonts
-        mkdir -pv $CHROOT/usr/share/icons
-        mkdir -pv $CHROOT/usr/share/themes
         mkdir -pv $CHROOT/var/lib/dbus
         mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
         echo "$USER" > /tmp/archroot_localuser
