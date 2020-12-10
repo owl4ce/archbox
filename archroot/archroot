@@ -80,7 +80,6 @@ case $1 in
         mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
         echo "$USER" > /tmp/archroot_localuser
         cp $INSTALL_PATH/archsetup $CHROOT/archsetup
-        cp $INSTALL_PATH/installyay $CHROOT/home/$USER/installyay
         chroot $CHROOT /bin/bash -c "./archsetup"
         msg "Archroot installation was successful"
     ;;
