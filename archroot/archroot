@@ -157,14 +157,14 @@ case $1 in
     -u|--unmount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             msg "Unmounting necessary filesystems..."
-            $PRIV umount --recursive -v $CHROOT/dev
-            $PRIV umount --recursive -v $CHROOT/home
-            $PRIV umount --recursive -v $CHROOT/lib/modules
-            $PRIV umount --recursive -v $CHROOT/proc
-            $PRIV umount --recursive -v $CHROOT/run
-            $PRIV umount --recursive -v $CHROOT/sys
-            $PRIV umount --recursive -v $CHROOT/tmp
-            $PRIV umount --recursive -v $CHROOT/var/lib/dbus
+            $PRIV umount -Rv $CHROOT/dev
+            $PRIV umount -Rv $CHROOT/home
+            $PRIV umount -Rv $CHROOT/lib/modules
+            $PRIV umount -Rv $CHROOT/proc
+            $PRIV umount -Rv $CHROOT/run
+            $PRIV umount -Rv $CHROOT/sys
+            $PRIV umount -Rv $CHROOT/tmp
+            $PRIV umount -Rv $CHROOT/var/lib/dbus
             msg "Please check status above!"
             msg "If failed to unmount (e.g: dev: target is busy), please reboot host (safe), don't use fuser!"
             msg "If failed to unmount (e.g: run: target is busy), try \"archroot sudo serviced stop\" or reboot host (safe), don't use fuser!"
