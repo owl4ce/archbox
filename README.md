@@ -58,14 +58,14 @@ sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 sudo archroot -c fill-anything-hahah
 ```
 
-### Mounting chroot directory (ᴀᴘɪ ꜰɪʟᴇꜱʏꜱᴛᴇᴍꜱ)
+### Mounting chroot directory
 > Skip this if you have just finished installing the chroot environment for the first time.
 ```bash
 archroot -m
 ```
 > You will be automatically asked for root password.
 
-### Unmounting chroot directory (ᴀᴘɪ ꜰɪʟᴇꜱʏꜱᴛᴇᴍꜱ)
+### Unmounting chroot directory
 ```bash
 archroot -u
 ```
@@ -158,7 +158,7 @@ Archroot will not read fonts, themes, and icons from the host `/usr/share` direc
 ### Installing yay AUR Helper
 Just run this in chroot environment (`--enter`):
 ```bash
-~/installyay
+git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 ```
 
 ## :confetti_ball: Improving usage
