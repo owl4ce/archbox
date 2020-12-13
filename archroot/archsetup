@@ -47,8 +47,9 @@ while true; do
 	passwd $L_USER && break
 done
 sed -i 's_# %wheel ALL=(ALL) NOPASSWD: ALL_%wheel ALL=(ALL) NOPASSWD: ALL_' /etc/sudoers
-echo "[[ -f /etc/arch-release ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.bashrc
-echo "[[ -f /etc/arch-release ]] && cd ~" >> /home/$L_USER/.bashrc
-[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/arch-release ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.zshrc
-[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/arch-release ]] && cd ~" >> /home/$L_USER/.zshrc
+touch /etc/archroot
+echo "[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.bashrc
+echo "[[ -f /etc/archroot ]] && cd ~" >> /home/$L_USER/.bashrc
+[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.zshrc
+[[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/archroot ]] && cd ~" >> /home/$L_USER/.zshrc
 
