@@ -14,7 +14,7 @@ msg "Initializing pacman keyrings..."
 pacman-key --init
 pacman-key --populate archlinux
 msg "Installing essential packages..."
-pacman -Syu base base-devel xorg pulseaudio nano git --noconfirm
+pacman -Syu base base-devel xorg pulseaudio nano git rsync --noconfirm
 msg "Installing servicectl..."
 mkdir -p /usr/local/share/servicectl/enabled
 curl -L 'https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl' > /usr/local/share/servicectl/servicectl 2>/dev/null
