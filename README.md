@@ -10,7 +10,7 @@
 
 ### :octocat: Why chroot? <img alt="Visits" align="right" src="https://badges.pufler.dev/visits/owl4ce/archroot?style=flat-square&label=&color=success&logo=GitHub&logoColor=white&labelColor=373e4d"/>
 
-<img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-10c7a4fd-ba9d-46ec-8193-559793ddc2c9.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLTEwYzdhNGZkLWJhOWQtNDZlYy04MTkzLTU1OTc5M2RkYzJjOS5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.rg0jBXM8ozYxUuJqLe7Ogjdpzh2ZjdLWm-SJMkYTgk0" alt="preview" align="right" width="400px">
+<img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-9d0c65c9-6615-42e7-a5a1-e97fcf57d196.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLTlkMGM2NWM5LTY2MTUtNDJlNy1hNWExLWU5N2ZjZjU3ZDE5Ni5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.uai71P0pF-4yQjKryay087dqCvPKpABLYA9B5wGuPi4" alt="preview" align="right" width="400px">
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
