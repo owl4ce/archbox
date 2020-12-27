@@ -8,7 +8,7 @@
 
 ##  
 
-### :octocat: Why chroot? <img alt="Visits" align="right" src="https://badges.pufler.dev/visits/owl4ce/archroot?style=flat-square&label=&color=success&logo=GitHub&logoColor=white&labelColor=373e4d"/>
+### :octocat: Why chroot? <img alt="" align="right" src="https://badges.pufler.dev/visits/owl4ce/archroot?style=flat-square&label=&color=success&logo=GitHub&logoColor=white&labelColor=373e4d"/>
 
 <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-9d0c65c9-6615-42e7-a5a1-e97fcf57d196.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLTlkMGM2NWM5LTY2MTUtNDJlNy1hNWExLWU5N2ZjZjU3ZDE5Ni5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.uai71P0pF-4yQjKryay087dqCvPKpABLYA9B5wGuPi4" alt="preview" align="right" width="400px">
 
