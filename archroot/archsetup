@@ -61,6 +61,6 @@ touch /etc/archroot
 [[ -f /home/$L_USER/.zshrc ]] && \
 OMZ_CHK="$(grep oh-my-zsh.sh /home/$L_USER/.zshrc)"
 if [[ $OMZ_CHK = *"oh-my-zsh.sh"* ]]; then
-    sed -i '/.*oh-my-zsh.sh/i [[ -f /etc/archroot ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot"' /home/$USER/.zshrc
+    sed -i '/.*oh-my-zsh.sh/i [[ -f /etc/archroot ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot"' /home/$L_USER/.zshrc
 fi
 
