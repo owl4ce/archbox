@@ -48,6 +48,7 @@ OPTIONS:
   -m, --mount           Mount chroot API filesystems.
   -u, --unmount         Unmount chroot API filesystems.
   -r, --remount-run     Remount /run chroot API filesystems.
+  -s, --status          Check mounted chroot API filesystems.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
 
