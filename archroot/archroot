@@ -163,10 +163,10 @@ case $1 in
         checkdep sed
         sed -i 's_CheckSpace_#CheckSpace_' $CHROOT/etc/pacman.conf
         msg "Mounting chroot API filesystems..."
-        mkdir -pv $CHROOT/lib/modules
-        mkdir -pv $CHROOT/var/lib/dbus
+        mkdir -p $CHROOT/lib/modules
+        mkdir -p $CHROOT/var/lib/dbus
         mnt_apifs root
-        archroot -s
+        /usr/local/bin/archroot -s
         echo "$USER" > /tmp/archroot_localuser
         cp $INSTALL_PATH/archsetup $CHROOT/archsetup
         chroot $CHROOT /bin/bash -c "./archsetup"
@@ -195,10 +195,10 @@ case $1 in
     ;;
     -r|--remount-run)
         if mount | grep "$CHROOT/run" > /dev/null; then
-            msg "Remounting chroot /run API filesystems..."
+            msg "Remounting /run chroot API filesystems..."
             $PRIV umount -lv $CHROOT/run
             $PRIV mount -Rv /run $CHROOT/run
-            msg "Checking chroot /run API filesystems..."
+            msg "Checking /run chroot API filesystems..."
             if mount | grep "$CHROOT/run" > /dev/null; then
                 msg_mnt "$CHROOT/run"
             else
@@ -206,7 +206,7 @@ case $1 in
             fi
             msg "Chroot API filesystems: /run remounted successfuly"
         else
-            msg "Checking chroot /run API filesystems..."
+            msg "Checking /run chroot API filesystems..."
             msg_umnt "$CHROOT/run"
             err "Chroot API filesystems: /run not mounted"
         fi
