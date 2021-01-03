@@ -24,14 +24,14 @@ USAGE: archroot --option
 
 OPTIONS:
   -c, --create URL      Creates a chroot environment.
-  -m, --mount           Mount chroot (API filesystems) directory.
-  -u, --unmount         Unmount chroot (API filesystems) directory.
+  -m, --mount           Mount chroot API filesystems.
+  -u, --unmount         Unmount chroot API filesystems.
+  -r, --remount-run     Remount /run chroot API filesystems.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
 
+Install Arch Linux inside chroot environment using same user environment
 https://github.com/owl4ce/archroot
-https://github.com/lemniskett/archbox
-
 EOF
 }
 
@@ -65,16 +65,16 @@ case $1 in
         msg "Disabling Pacman's CheckSpace..."
         checkdep sed
         sed -i 's_CheckSpace_#CheckSpace_' $CHROOT/etc/pacman.conf
-        msg "Mounting necessary filesystems..."
+        msg "Mounting API filesystems..."
         mount -Rv /dev $CHROOT/dev
-        mount --make-rslave -v $CHROOT/dev
+        mount --make-rslave $CHROOT/dev
         mount -Rv /home $CHROOT/home
         mkdir -pv $CHROOT/lib/modules
         mount -Rv /lib/modules $CHROOT/lib/modules
         mount -vt proc /proc $CHROOT/proc
         mount -Rv /run $CHROOT/run
         mount -Rv /sys $CHROOT/sys
-        mount --make-rslave -v $CHROOT/sys
+        mount --make-rslave $CHROOT/sys
         mount -Rv /tmp $CHROOT/tmp
         mkdir -pv $CHROOT/var/lib/dbus
         mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
@@ -90,7 +90,7 @@ case $1 in
             else
                 echo "Not mounted: $CHROOT/dev"
                 $PRIV mount -Rv /dev $CHROOT/dev
-                $PRIV mount --make-rslave -v $CHROOT/dev
+                $PRIV mount --make-rslave $CHROOT/dev
             fi
             if mount | grep "$CHROOT/home" > /dev/null; then
                 echo "Mounted: $CHROOT/home"
@@ -121,7 +121,7 @@ case $1 in
             else
                 echo "Not mounted: $CHROOT/sys"
                 $PRIV mount -Rv /sys $CHROOT/sys
-                $PRIV mount --make-rslave -v $CHROOT/sys
+                $PRIV mount --make-rslave $CHROOT/sys
             fi
             if mount | grep "$CHROOT/tmp" > /dev/null; then
                 echo "Mounted: $CHROOT/tmp"
@@ -137,7 +137,7 @@ case $1 in
             fi
             err "Chroot directory: already mounted"
         else
-            msg "Mounting necessary filesystems..."
+            msg "Mounting API filesystems..."
             $PRIV mount -Rv /dev $CHROOT/dev
             $PRIV mount --make-rslave -v $CHROOT/dev
             $PRIV mount -Rv /home $CHROOT/home
@@ -152,7 +152,7 @@ case $1 in
     ;;
     -u|--unmount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            msg "Unmounting necessary filesystems..."
+            msg "Unmounting API filesystems..."
             $PRIV umount -Rv $CHROOT/dev
             $PRIV umount -Rv $CHROOT/home
             $PRIV umount -Rv $CHROOT/lib/modules
@@ -207,6 +207,11 @@ case $1 in
             fi
             err "Chroot directory: not yet mounted"
         fi
+    ;;
+    -r|--remount-run)
+        msg "Remounting /run API filesystems..."
+        $PRIV umount -lv $CHROOT/run
+        $PRIV mount -Rv /run $CHROOT/run
     ;;
     -e|--enter)
         checkdep xhost
