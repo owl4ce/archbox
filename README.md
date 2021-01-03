@@ -3,8 +3,6 @@
 <p align="center">Pulseaudio, d-bus, and service works like a charm</p>
 <p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center"><i>Not all services can run normally</i></p>
-<p align="center"><b>EXPERIMENTAL</b></p>
-<p align="center">Please read this carefully first!</p>
 
 ##  
 
@@ -12,11 +10,18 @@
 
 <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-b1122b6b-6d37-43d6-a727-cf63df935e6d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLWIxMTIyYjZiLTZkMzctNDNkNi1hNzI3LWNmNjNkZjkzNWU2ZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.tEYdZ6q3iLK_X3f4gQer7Sn23nWGk_lA9JsGThIIbis" alt="preview" align="right" width="400px">
 
-Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chrooted environment. First, I had a hard time (oh actually not being comfortable) with installing wine on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
+Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (oh actually not being comfortable) with installing wine (for example) on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
 Thanks to [@lemniskett](https://github.com/lemniskett)
 
 ## :syringe: Installation 
+#### Dependencies
+- text editor (e.g: nano)
+- bash
+- tar
+- wget
+- xorg-xhost
+
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
 ```bash
 git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./install.sh
@@ -25,6 +30,8 @@ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./instal
 > - `archroot.conf` will be installed to `/etc/archroot.conf`.
 
 ### Adding environment variables
+> Optional according to your needs
+
 Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd) in `archroot.conf`:
 ```cfg
 # Put your desired environment variable here, for example
@@ -38,14 +45,14 @@ USAGE: archroot --option
 
 OPTIONS:
   -c, --create URL      Creates a chroot environment.
-  -m, --mount           Mount chroot (API filesystems) directory.
-  -u, --unmount         Unmount chroot (API filesystems) directory.
+  -m, --mount           Mount chroot API filesystems.
+  -u, --unmount         Unmount chroot API filesystems.
+  -r, --remount-run     Remount /run chroot API filesystems.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
 
+Install Arch Linux inside chroot environment using same user environment
 https://github.com/owl4ce/archroot
-https://github.com/lemniskett/archbox
-
 ```
 ### Installing chroot environment
 Download link see [here](https://www.archlinux.org/download/). Then do,
@@ -58,14 +65,14 @@ sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 sudo archroot -c fill-anything-hahah
 ```
 
-### Mounting chroot directory
+### Mounting chroot API filesystems
 > Skip this if you have just finished installing the chroot environment for the first time.
 ```bash
 archroot -m
 ```
 > You will be automatically asked for root password.
 
-### Unmounting chroot directory
+### Unmounting chroot API filesystems
 ```bash
 archroot -u
 ```
@@ -74,7 +81,7 @@ archroot -u
 ### Entering chroot environment
 > Make sure you have mounted chroot directory before entering chroot, otherwise it will cause chroot system malfunction.
 ```bash
-archroot --enter
+archroot -e
 ```
 > You will be automatically asked for root password.
 
@@ -153,7 +160,7 @@ into:
 ```
 
 ### Shared fonts, themes, and icons
-Archroot will not read fonts, themes, and icons from the host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `/home/username/.fonts` (also .themes and .icons) instead.
+Archroot will not read fonts, themes, and icons from the host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `~/.fonts` (also .themes and .icons) instead.
 
 ### Installing yay AUR Helper
 Just run this in chroot environment (`--enter`):
@@ -172,7 +179,7 @@ Basic usage:
 archroot rofi -show drun
 ```
 
-Then you can add it as a DE/WM keybind (e.g: openbox window manager):
+Then you can add it as a DE/WM keybind (e.g: OpenboxWM):
 > Need bypass root password question.
 ```bash
 bash -c 'archroot rofi -show drun'
@@ -182,17 +189,17 @@ bash -c 'archroot rofi -show drun'
 
 Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
 ```cfg
-<!-- ARCHROOT -->
-    <keybind key="A-r">
-      <action name="Execute">
-        <command>bash -c 'archroot ~/.config/rofi/scripts/appsmenu.sh'</command>
-      </action>
-    </keybind>
-    <keybind key="W-S-Return">
-      <action name="Execute">
-        <command>bash -c 'urxvt -e archroot --enter'</command>
-      </action>
-    </keybind>
+453 <!-- ARCHROOT -->
+454     <keybind key="A-r">
+455       <action name="Execute">
+456         <command>bash -c 'archroot ~/.config/rofi/scripts/appsmenu.sh'</command>
+457       </action>
+458     </keybind>
+459     <keybind key="W-S-Return">
+460       <action name="Execute">
+461        <command>bash -c 'urxvt -e archroot --enter'</command>
+462      </action>
+463    </keybind>
 ```
 It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch the Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
