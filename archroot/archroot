@@ -15,11 +15,11 @@ function msg {
 }
 
 function msg_mnt {
-    echo "$(tput bold)$(tput setaf 2)[$(tput sgr0) Mounted$(tput bold)$(tput setaf 2) ]$(tput sgr0) $@"
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0) Mounted$(tput bold)$(tput setaf 2) ]$(tput sgr0)"
 }
 
 function msg_umnt {
-    echo "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0) $@"
+    echo "$(tput bold)$(tput setaf 1)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0)"
 }
 
 function help_text {
@@ -174,7 +174,7 @@ case $1 in
     ;;
     -m|--mount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            chk_apifs
+            chk_apifs | column -t
             msg "Chroot API filesystems: Already mounted"
         else
             msg "Mounting chroot API filesystems..."
@@ -189,31 +189,34 @@ case $1 in
             archroot -s
             msg "If failed to unmount simply reboot host!"
         else
-            chk_apifs
+            chk_apifs | column -t
             err "Chroot API filesystems: Not mounted"
         fi
     ;;
     -r|--remount-run)
+        function rr {
+                if mount | grep "$CHROOT/run" > /dev/null; then
+                    msg_mnt "$CHROOT/run"
+                else
+                    msg_umnt "$CHROOT/run"
+                fi
+        }
         if mount | grep "$CHROOT/run" > /dev/null; then
             msg "Remounting /run chroot API filesystems..."
             $PRIV umount -lv $CHROOT/run
             $PRIV mount -Rv /run $CHROOT/run
             msg "Checking /run chroot API filesystems..."
-            if mount | grep "$CHROOT/run" > /dev/null; then
-                msg_mnt "$CHROOT/run"
-            else
-                msg_umnt "$CHROOT/run"
-            fi
+            rr | column -t
             msg "Chroot API filesystems: /run remounted successfuly"
         else
             msg "Checking /run chroot API filesystems..."
-            msg_umnt "$CHROOT/run"
+            rr | column -t
             err "Chroot API filesystems: /run not mounted"
         fi
     ;;
     -s|--status)
         msg "Checking mounted chroot API filesystems..."
-        chk_apifs
+        chk_apifs | column -t
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             msg "Chroot API filesystems: Mounted"
         else
