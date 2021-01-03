@@ -72,12 +72,14 @@ sudo archroot -c fill-anything-hahah
 archroot -m
 ```
 > You will be automatically asked for root password.
+<p align="center"><img src="https://i.ibb.co/LtvS8w4/mount.png"/></p>
 
 ### Unmounting chroot API filesystems
 ```bash
 archroot -u
 ```
 > You will be automatically asked for root password.
+<p align="center"><img src="https://i.ibb.co/LJGbGK1/unmount.png"/></p>
 
 ### Entering chroot environment
 > Make sure you have mounted chroot directory before entering chroot, otherwise it will cause chroot system malfunction.
