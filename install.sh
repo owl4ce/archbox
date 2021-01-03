@@ -17,61 +17,19 @@ function msg {
     echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
 }
 
-function chk_apifs {
-    if mount | grep "$CHROOT/dev" > /dev/null; then
-        echo "Mounted: $CHROOT/dev"
-    else
-        echo "Unmounted: $CHROOT/dev"
-    fi
-    if mount | grep "$CHROOT/home" > /dev/null; then
-        echo "Mounted: $CHROOT/home"
-    else
-        echo "Unmounted: $CHROOT/home"
-    fi
-    if mount | grep "$CHROOT/usr/lib/modules" > /dev/null; then
-        echo "Mounted: $CHROOT/lib/modules"
-    else
-        echo "Unmounted: $CHROOT/lib/modules"
-    fi
-    if mount | grep "$CHROOT/proc" > /dev/null; then
-        echo "Mounted: $CHROOT/proc"
-    else
-        echo "Unmounted: $CHROOT/proc"
-    fi
-    if mount | grep "$CHROOT/run" > /dev/null; then
-        echo "Mounted: $CHROOT/run"
-    else
-        echo "Unmounted: $CHROOT/run"
-    fi
-    if mount | grep "$CHROOT/sys" > /dev/null; then
-        echo "Mounted: $CHROOT/sys"
-    else
-        echo "Unmounted: $CHROOT/sys"
-    fi
-    if mount | grep "$CHROOT/tmp" > /dev/null; then
-        echo "Mounted: $CHROOT/tmp"
-    else
-        echo "Unmounted: $CHROOT/tmp"
-    fi
-    if mount | grep "$CHROOT/var/lib/dbus" > /dev/null; then
-        echo "Mounted: $CHROOT/var/lib/dbus"
-    else
-        echo "Unmounted: $CHROOT/var/lib/dbus"
-    fi
-}
 asroot
 case $1 in
     --uninstall)
         [[ -f /usr/local/bin/archroot ]] && source /etc/archroot.conf && clear && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            archroot -s
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
-            chk_apifs
             err "Exiting... to anticipate damaged host system!"
         else
             [[ -f /usr/local/bin/archroot ]] && \
             clear
             while true; do
-            msg "This will remove the following:"
+            msg "This will remove following:"
             echo "/usr/local/bin/archroot"
             echo "$INSTALL_PATH/*"
             echo "/etc/archroot.conf"

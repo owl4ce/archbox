@@ -14,9 +14,17 @@ function msg {
     echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
 }
 
+function msg_mnt {
+    echo "$(tput bold)$(tput setaf 2)[$(tput sgr0) Mounted$(tput bold)$(tput setaf 2) ]$(tput sgr0) $@"
+}
+
+function msg_umnt {
+    echo "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0) $@"
+}
+
 function help_text {
 cat << EOF
-USAGE: archroot --option
+USAGE: archroot OPTIONS
 
 OPTIONS:
   -c, --create URL      Creates a chroot environment.
@@ -47,44 +55,44 @@ function storeenv {
 
 function chk_apifs {
     if mount | grep "$CHROOT/dev" > /dev/null; then
-        echo "Mounted: $CHROOT/dev"
+        msg_mnt "$CHROOT/dev"
     else
-        echo "Unmounted: $CHROOT/dev"
+        msg_umnt "$CHROOT/dev"
     fi
     if mount | grep "$CHROOT/home" > /dev/null; then
-        echo "Mounted: $CHROOT/home"
+        msg_mnt "$CHROOT/home"
     else
-        echo "Unmounted: $CHROOT/home"
+        msg_umnt "$CHROOT/home"
     fi
     if mount | grep "$CHROOT/usr/lib/modules" > /dev/null; then
-        echo "Mounted: $CHROOT/lib/modules"
+        msg_mnt "$CHROOT/lib/modules"
     else
-        echo "Unmounted: $CHROOT/lib/modules"
+        msg_umnt "$CHROOT/lib/modules"
     fi
     if mount | grep "$CHROOT/proc" > /dev/null; then
-        echo "Mounted: $CHROOT/proc"
+        msg_mnt "$CHROOT/proc"
     else
-        echo "Unmounted: $CHROOT/proc"
+        msg_umnt "$CHROOT/proc"
     fi
     if mount | grep "$CHROOT/run" > /dev/null; then
-        echo "Mounted: $CHROOT/run"
+        msg_mnt "$CHROOT/run"
     else
-        echo "Unmounted: $CHROOT/run"
+        msg_umnt "$CHROOT/run"
     fi
     if mount | grep "$CHROOT/sys" > /dev/null; then
-        echo "Mounted: $CHROOT/sys"
+        msg_mnt "$CHROOT/sys"
     else
-        echo "Unmounted: $CHROOT/sys"
+        msg_umnt "$CHROOT/sys"
     fi
     if mount | grep "$CHROOT/tmp" > /dev/null; then
-        echo "Mounted: $CHROOT/tmp"
+        msg_mnt "$CHROOT/tmp"
     else
-        echo "Unmounted: $CHROOT/tmp"
+        msg_umnt "$CHROOT/tmp"
     fi
     if mount | grep "$CHROOT/var/lib/dbus" > /dev/null; then
-        echo "Mounted: $CHROOT/var/lib/dbus"
+        msg_mnt "$CHROOT/var/lib/dbus"
     else
-        echo "Unmounted: $CHROOT/var/lib/dbus"
+        msg_umnt "$CHROOT/var/lib/dbus"
     fi
 }
 
@@ -158,6 +166,7 @@ case $1 in
         mkdir -pv $CHROOT/lib/modules
         mkdir -pv $CHROOT/var/lib/dbus
         mnt_apifs root
+        archroot -s
         echo "$USER" > /tmp/archroot_localuser
         cp $INSTALL_PATH/archsetup $CHROOT/archsetup
         chroot $CHROOT /bin/bash -c "./archsetup"
@@ -166,44 +175,61 @@ case $1 in
     -m|--mount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             chk_apifs
-            err "Chroot API filesystems: already mounted"
+            msg "Chroot API filesystems: Already mounted"
         else
-            msg "Mounting API filesystems..."
+            msg "Mounting chroot API filesystems..."
             mnt_apifs user
+            archroot -s
         fi
     ;;
     -u|--unmount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            msg "Unmounting API filesystems..."
+            msg "Unmounting chroot API filesystems..."
             umnt_apifs
-            msg "Please check status above!"
-            msg "If failed to unmount:"
-            msg "e.g: dev: target is busy, please reboot host (safe), don't use fuser!"
-            msg "e.g: run: target is busy, try \"archroot sudo serviced stop\" or reboot host (safe), don't use fuser!"
+            archroot -s
+            msg "If failed to unmount simply reboot host!"
         else
             chk_apifs
-            err "Chroot API filesystems: not mounted"
+            err "Chroot API filesystems: Not mounted"
         fi
     ;;
     -r|--remount-run)
         if mount | grep "$CHROOT/run" > /dev/null; then
-            msg "Remounting /run API filesystems..."
+            msg "Remounting chroot /run API filesystems..."
             $PRIV umount -lv $CHROOT/run
             $PRIV mount -Rv /run $CHROOT/run
+            msg "Checking chroot /run API filesystems..."
+            if mount | grep "$CHROOT/run" > /dev/null; then
+                msg_mnt "$CHROOT/run"
+            else
+                msg_umnt "$CHROOT/run"
+            fi
+            msg "Chroot API filesystems: /run remounted successfuly"
         else
-            echo "Unmounted: $CHROOT/run"
-            err "Chroot API filesystems: /run unmounted"
+            msg "Checking chroot /run API filesystems..."
+            msg_umnt "$CHROOT/run"
+            err "Chroot API filesystems: /run not mounted"
         fi
     ;;
     -s|--status)
         msg "Checking mounted chroot API filesystems..."
         chk_apifs
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            msg "Chroot API filesystems: Mounted"
+        else
+            err "Chroot API filesystems: Unmounted"
+        fi
     ;;
     -e|--enter)
-        redirx
-        storeenv
-        $PRIV $INSTALL_PATH/copyresolv
-        $PRIV $INSTALL_PATH/command enter
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            redirx
+            storeenv
+            $PRIV $INSTALL_PATH/copyresolv
+            $PRIV $INSTALL_PATH/command enter
+        else
+            archroot -s
+            msg "Please mount chroot API filesystems before entering chroot environment!"
+        fi
 	;;
     -h|--help)
         help_text
@@ -215,10 +241,15 @@ case $1 in
         err "Unknown option: $1"
     ;;
     *)
-        redirx
-        storeenv
-        $PRIV $INSTALL_PATH/copyresolv
-        COMMAND=$(echo $@ | tr ' ' '\ ')
-        $PRIV $INSTALL_PATH/command $COMMAND
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            redirx
+            storeenv
+            $PRIV $INSTALL_PATH/copyresolv
+            COMMAND=$(echo $@ | tr ' ' '\ ')
+            $PRIV $INSTALL_PATH/command $COMMAND
+        else
+            archroot -s
+            msg "Please mount chroot API filesystems before using chroot environment command directly!"
+        fi
     ;;
 esac
