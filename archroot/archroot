@@ -135,7 +135,7 @@ case $1 in
                 echo "Not mounted: $CHROOT/var/lib/dbus"
                 $PRIV mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
             fi
-            err "Chroot directory: already mounted"
+            err "Chroot API filesystems: already mounted"
         else
             msg "Mounting API filesystems..."
             $PRIV mount -Rv /dev $CHROOT/dev
@@ -205,13 +205,18 @@ case $1 in
             else
                 echo "Not mounted: $CHROOT/var/lib/dbus"
             fi
-            err "Chroot directory: not yet mounted"
+            err "Chroot API filesystems: not yet mounted"
         fi
     ;;
     -r|--remount-run)
-        msg "Remounting /run API filesystems..."
-        $PRIV umount -lv $CHROOT/run
-        $PRIV mount -Rv /run $CHROOT/run
+        if mount | grep "$CHROOT/run" > /dev/null; then
+            msg "Remounting /run API filesystems..."
+            $PRIV umount -lv $CHROOT/run
+            $PRIV mount -Rv /run $CHROOT/run
+        else
+            echo "Not mounted: $CHROOT/run"
+            err "Chroot API filesystems: /run not mounted"
+        fi
     ;;
     -e|--enter)
         checkdep xhost
