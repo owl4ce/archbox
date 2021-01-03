@@ -41,7 +41,7 @@ ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct GTK_CSD=0 LD_PRELOAD=/home/violet/.themes/li
 
 ## :anchor: Usage
 ```bash
-USAGE: archroot --option
+USAGE: archroot OPTIONS
 
 OPTIONS:
   -c, --create URL      Creates a chroot environment.
