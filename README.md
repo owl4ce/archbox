@@ -187,7 +187,7 @@ bash -c 'archroot rofi -show drun'
 
 **If you use my [dotfiles](https://github.com/owl4ce/dotfiles), I suggest following this.**
 
-Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
+Edit [`~/.config/openbox/rc.xml`](https://github.com/owl4ce/dotfiles/blob/master/.config/openbox/rc.xml), then add this to keyboard tag:
 ```cfg
 453 <!-- ARCHROOT -->
 454     <keybind key="A-r">
@@ -201,14 +201,14 @@ Edit `~/.config/openbox/rc.xml`, then add this to keyboard tag:
 462      </action>
 463    </keybind>
 ```
-It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch the Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
+It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
 Host Environment|Chroot Environment
 |--|--|
 ![Gentoo](https://i.ibb.co/0M89Nyr/2020-12-21-212809-1366x768-scrot.png)|![Arch](https://i.ibb.co/ZxDpx5X/2020-12-05-024339-1366x768-scrot.png)
 
 ## :gun: Uninstall Archroot completely
-The most important thing here is don't forget to unmount the chroot environment directory, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`.
+The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`.
 ```bash
 sudo install.sh --uninstall
 ```
