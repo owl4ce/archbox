@@ -1,6 +1,6 @@
 <p align="center"><a name="top" href="#octocat-why-chroot-"><img width="60%" src="https://i.ibb.co/DgDn47J/archroot.png"></a></p>
 <p align="center">Install Arch Linux inside chroot environment using same user environment</p>
-<p align="center"><b>This fork contains a fancy and structured output</b></p>
+<p align="center"><b>This fork contains fancy and structured output</b></p>
 <p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center"><i>Not all services can run normally</i></p>
 
@@ -44,7 +44,7 @@ Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd]
 ```
 
 ### Mount options
-> Customize yourself
+> Customize yourself **(yes/no)**
 
 ```cfg
 ...
@@ -122,7 +122,7 @@ archroot command
 ### Known issues
 See spesifics at [lemniskett/archbox#known-issues](https://github.com/lemniskett/archbox#known-issues).
 
-#### Remount /run
+#### Remount `/run`
 ```bash
 archroot -r
 ```
@@ -133,7 +133,9 @@ archroot -r
 
 </details>
 
-#### Runtime only
+#### Mount `$XDG_RUNTIME_DIR`
+> Without /run recursively
+
 ```bash
 archroot --runtime-only
 ```
