@@ -2,7 +2,7 @@
 L_USER="$(cat /tmp/archroot_localuser)"
 
 function err {
-    echo "$(tput bold)$(tput setaf 1)==> $@ $(tput sgr0)"
+    echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@"
     exit 1
 }
 
