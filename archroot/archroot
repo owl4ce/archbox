@@ -280,15 +280,10 @@ case $1 in
         err "Unknown option $1"
     ;;
     *)
-        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            redirx
-            storeenv
-            $PRIV $INSTALL_PATH/copyresolv
-            COMMAND=$(echo $@ | tr ' ' '\ ')
-            $PRIV $INSTALL_PATH/command $COMMAND
-        else
-            /usr/local/bin/archroot -s
-            gr_msg "Please mount chroot API filesystems before using chroot environment command directly!"
-        fi
+        redirx
+        storeenv
+        $PRIV $INSTALL_PATH/copyresolv
+        COMMAND=$(echo $@ | tr ' ' '\ ')
+        $PRIV $INSTALL_PATH/command $COMMAND
     ;;
 esac
