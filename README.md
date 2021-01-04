@@ -1,6 +1,6 @@
 <p align="center"><a name="top" href="#octocat-why-chroot-"><img width="60%" src="https://i.ibb.co/DgDn47J/archroot.png"></a></p>
 <p align="center">Install Arch Linux inside chroot environment using same user environment</p>
-<p align="center">Pulseaudio, d-bus, and service works like a charm</p>
+<p align="center"><b>This fork contains a fancy and structured output</b></p>
 <p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center"><i>Not all services can run normally</i></p>
 
@@ -34,9 +34,26 @@ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./instal
 
 Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd) in `archroot.conf`:
 ```cfg
-# Put your desired environment variable here, for example
-# ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct"
-ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct GTK_CSD=0 LD_PRELOAD=/home/violet/.themes/libgtk3-nocsd.so.0"
+...
+
+11 # Put your desired environment variable here, for example
+12 # ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct"
+13 ENV_VAR="QT_QPA_PLATFORMTHEME=qt5ct GTK_CSD=0 LD_PRELOAD=/home/violet/.themes/libgtk3-nocsd.so.0"
+
+...
+```
+
+### Mount options
+> Customize yourself
+
+```cfg
+...
+
+15 # Mount options
+16 # Verbose mount/unmount process
+17 VERBOSE_MSG="no"
+18 # Mount /run ?
+19 MOUNT_RUN="yes"
 ```
 
 ## :anchor: Usage
@@ -47,7 +64,8 @@ OPTIONS:
   -c, --create URL      Creates a chroot environment.
   -m, --mount           Mount chroot API filesystems.
   -u, --unmount         Unmount chroot API filesystems.
-  -r, --remount-run     Remount /run chroot API filesystems.
+  -r, --remount-run     Remount /run to chroot environment.
+      --runtime-only    Mount $XDG_RUNTIME_DIR to chroot environment.
   -s, --status          Check mounted chroot API filesystems.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
@@ -67,16 +85,15 @@ sudo archroot -c fill-anything-hahah
 ```
 
 ### Mounting chroot API filesystems
-> Skip this if you have just finished installing the chroot environment for the first time.
+> Skip this if you have just finished installing the chroot environment for the first time or try reboot host before using.
+> You will be automatically asked for root password.
 ```bash
 archroot -m
 ```
-> You will be automatically asked for root password.
-
 <details>
 <summary><strong>Screenshot</strong></summary>
   
-<p align="center"><img src="https://i.ibb.co/LtvS8w4/mount.png"/></p>
+<p align="center"><img src="./screenshots/mount.png"/></p>
 
 </details>
 
@@ -84,12 +101,10 @@ archroot -m
 ```bash
 archroot -u
 ```
-> You will be automatically asked for root password.
-
 <details>
 <summary><strong>Screenshot</strong></summary>
   
-<p align="center"><img src="https://i.ibb.co/LJGbGK1/unmount.png"/></p>
+<p align="center"><img src="./screenshots/unmount.png"/></p>
 
 </details>
 
@@ -97,14 +112,37 @@ archroot -u
 ```bash
 archroot -e
 ```
-> You will be automatically asked for root password.
 
 ### Executing commands chroot environment directly
 ```bash
 archroot command
 ```
 **Example command**: neofetch
-> You will be automatically asked for root password.
+
+### Known issues
+See spesifics at [lemniskett/archbox#known-issues](https://github.com/lemniskett/archbox#known-issues).
+
+#### Remount /run
+```bash
+archroot -r
+```
+<details>
+<summary><strong>Screenshot</strong></summary>
+  
+<p align="center"><img src="./screenshots/remount-run.png"/></p>
+
+</details>
+
+#### Runtime only
+```bash
+archroot --runtime-only
+```
+<details>
+<summary><strong>Screenshot</strong></summary>
+  
+<p align="center"><img src="./screenshots/runtime-only.png"/></p>
+
+</details>
 
 ## :bulb: Tips
 ### Bypass root password question
