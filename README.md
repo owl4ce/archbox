@@ -280,3 +280,5 @@ The most important thing here is don't forget to unmount the chroot environment 
 ```bash
 sudo install.sh --uninstall
 ```
+  
+<p align="center"><img src="./screenshots/uninstall.png"/></p>
