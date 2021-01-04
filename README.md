@@ -29,10 +29,11 @@ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./instal
 > - Arch Linux root directory will be installed to `/opt/archroot/root.x86_64/` after extracting tarball.
 > - `archroot.conf` will be installed to `/etc/archroot.conf`.
 
-### Adding environment variables
+### `archroot.conf`
+#### Adding environment variables
 > Optional according to your needs
 
-Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd) in `archroot.conf`:
+Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd):
 ```cfg
 ...
 
@@ -43,7 +44,7 @@ Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd]
 ...
 ```
 
-### Mount options
+#### Mount options
 > Customize yourself **(yes/no)**
 
 ```cfg
@@ -79,16 +80,15 @@ Download link see [here](https://www.archlinux.org/download/). Then do,
 sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 ```
 **Example link**: http://mirrors.evowise.com/archlinux/iso/2020.11.01/archlinux-bootstrap-2020.11.01-x86_64.tar.gz  
-**Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/archroot/`. Then do,
+**Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/archroot/`. Then do
 ```bash
 sudo archroot -c fill-anything-hahah
 ```
 
 ### Mounting chroot API filesystems
-> Skip this if you have just finished installing the chroot environment for the first time or try reboot host before using.
-> You will be automatically asked for root password.
+> Skip this if you have just finished installing the chroot environment for the first time or try reboot host before using. You will be automatically asked for root password when executing archroot options.
 ```bash
-archroot -m
+$ archroot -m
 ```
 <details>
 <summary><strong>Screenshot</strong></summary>
@@ -99,7 +99,7 @@ archroot -m
 
 ### Unmounting chroot API filesystems
 ```bash
-archroot -u
+$ archroot -u
 ```
 <details>
 <summary><strong>Screenshot</strong></summary>
@@ -110,21 +110,23 @@ archroot -u
 
 ### Entering chroot environment
 ```bash
-archroot -e
+$ archroot -e
 ```
 
 ### Executing commands chroot environment directly
 ```bash
-archroot command
+$ archroot commands
 ```
-**Example command**: neofetch
 
 ### Known issues
-See spesifics at [lemniskett/archbox#known-issues](https://github.com/lemniskett/archbox#known-issues).
+> See spesifics at [lemniskett/archbox#known-issues](https://github.com/lemniskett/archbox#known-issues).
 
 #### Remount `/run`
+When you make Archroot automatically mount API filesystems when host boots, there is usually `$XDG_RUNTIME_DIR` is not visible in chroot environment, remounting will make it visible.
+> **Default**: yes
+
 ```bash
-archroot -r
+$ archroot -r
 ```
 <details>
 <summary><strong>Screenshot</strong></summary>
@@ -133,11 +135,11 @@ archroot -r
 
 </details>
 
-#### Mount `$XDG_RUNTIME_DIR`
-> Without /run recursively
+#### Mount `$XDG_RUNTIME_DIR` (NixOS-specific issues)
+Mounting `/run` somehow breaks NixOS, set `MOUNT_RUN` in `/etc/archbox.conf` to "no" to disable mounting `/run`, then unmount API filesystems then mount again first and do
 
 ```bash
-archroot --runtime-only
+$ archroot --runtime-only
 ```
 <details>
 <summary><strong>Screenshot</strong></summary>
@@ -150,7 +152,7 @@ archroot --runtime-only
 ### Bypass root password question
 **SUDO**  
 ```bash
-sudo visudo
+$ sudo visudo
 ```
 Then add this to the bottom line (`/etc/sudoers`):
 ```cfg
@@ -164,54 +166,58 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/copyresolv
 permit nopass keepenv :wheel as root cmd /opt/archroot/command
 ```
 
-### Include pacman package manager from Archroot into neofetch host
-```bash
-sudo $EDITOR `which neofetch`
-```
-Then edit this section:
-```cfg
-1305     case "$os" in
-1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
-1307             # Package Manager Programs.
-1308             has "pacman-key" && tot pacman -Qq --color never
-1309             has "dpkg"       && tot dpkg-query -f '.\n' -W
-1310             has "rpm"        && tot rpm -qa
-1311             has "xbps-query" && tot xbps-query -l
-1312             has "apk"        && tot apk info
-1313             has "opkg"	  && tot opkg list-installed
-1314          	 has "pacman-g2"  && tot pacman-g2 -Q
-1315             has "lvu"        && tot lvu installed
-1316             has "tce-status" && tot tce-status -i
-1317             has "pkg_info"   && tot pkg_info
-1318             has "tazpkg"     && tot tazpkg list && ((packages-=6))
-1319             has "sorcery"    && tot gaze installed
-1320             has "alps"	  && tot alps showinstalled
-1321             has "butch"	  && tot butch list
-```
-into:
-```cfg
-1305     case "$os" in
-1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
-1307             # Package Manager Programs.
-1308             has "pacman-key" && tot pacman -Qq --color never
-1309             has "dpkg"       && tot dpkg-query -f '.\n' -W
-1310             has "rpm"        && tot rpm -qa
-1311             has "xbps-query" && tot xbps-query -l
-1312             has "apk"        && tot apk info
-1313             has "opkg"	  && tot opkg list-installed
-1314           	 has "pacman-g2"  && tot pacman-g2 -Q
-1315             has "lvu"        && tot lvu installed
-1316             has "tce-status" && tot tce-status -i
-1317             has "pkg_info"   && tot pkg_info
-1318             has "tazpkg"     && tot tazpkg list && ((packages-=6))
-1319             has "sorcery"    && tot gaze installed
-1320             has "alps"	  && tot alps showinstalled
-1321             has "butch"	  && tot butch list
-1322             pacman(){
-1323                archroot pacman -Q
-1324             }
-1325             has "pacman" && tot pacman
-```
+<details>
+<summary><strong>Include pacman package manager from Archroot into neofetch host</strong></summary>
+
+  ```bash
+  sudo $EDITOR `which neofetch`
+  ```
+  Then edit this section:
+  ```cfg
+  1305     case "$os" in
+  1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
+  1307             # Package Manager Programs.
+  1308             has "pacman-key" && tot pacman -Qq --color never
+  1309             has "dpkg"       && tot dpkg-query -f '.\n' -W
+  1310             has "rpm"        && tot rpm -qa
+  1311             has "xbps-query" && tot xbps-query -l
+  1312             has "apk"        && tot apk info
+  1313             has "opkg"	  && tot opkg list-installed
+  1314          	 has "pacman-g2"  && tot pacman-g2 -Q
+  1315             has "lvu"        && tot lvu installed
+  1316             has "tce-status" && tot tce-status -i
+  1317             has "pkg_info"   && tot pkg_info
+  1318             has "tazpkg"     && tot tazpkg list && ((packages-=6))
+  1319             has "sorcery"    && tot gaze installed
+  1320             has "alps"	  && tot alps showinstalled
+  1321             has "butch"	  && tot butch list
+  ```
+  into:
+  ```cfg
+  1305     case "$os" in
+  1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
+  1307             # Package Manager Programs.
+  1308             has "pacman-key" && tot pacman -Qq --color never
+  1309             has "dpkg"       && tot dpkg-query -f '.\n' -W
+  1310             has "rpm"        && tot rpm -qa
+  1311             has "xbps-query" && tot xbps-query -l
+  1312             has "apk"        && tot apk info
+  1313             has "opkg"	  && tot opkg list-installed
+  1314           	 has "pacman-g2"  && tot pacman-g2 -Q
+  1315             has "lvu"        && tot lvu installed
+  1316             has "tce-status" && tot tce-status -i
+  1317             has "pkg_info"   && tot pkg_info
+  1318             has "tazpkg"     && tot tazpkg list && ((packages-=6))
+  1319             has "sorcery"    && tot gaze installed
+  1320             has "alps"	  && tot alps showinstalled
+  1321             has "butch"	  && tot butch list
+  1322             pacman(){
+  1323                archroot pacman -Q
+  1324             }
+  1325             has "pacman" && tot pacman
+  ```
+
+</details>
 
 ### Shared fonts, themes, and icons
 Archroot will not read resources from host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `~/.fonts` also`~/.themes` and `~/.icons`.
@@ -219,24 +225,30 @@ Archroot will not read resources from host `/usr/share` directory. Because to av
 ### Installing yay AUR Helper
 Just run this in chroot environment (`--enter`):
 ```bash
-git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
+$ git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 ```
 
 ## :confetti_ball: Improving usage
 ### Using rofi as application launcher
 First, install rofi in the Archroot.
+- Using commands directly
 ```bash
-archroot sudo pacman -S rofi
+$ archroot sudo pacman -S rofi
+```
+- Entering chroot environment firstly
+```bash
+$ archroot -e
+(Archroot) $ sudo pacman -S rofi
 ```
 Basic usage:
 ```bash
-archroot rofi -show drun
+$ archroot rofi -show drun
 ```
 
 Then you can add it as a DE/WM keybind (e.g: OpenboxWM):
-> Need bypass root password question.
+> Need [bypass root password question](#bypass-root-password-question).
 ```bash
-bash -c 'archroot rofi -show drun'
+$ bash -c 'archroot rofi -show drun'
 ```
 
 **If you use my [dotfiles](https://github.com/owl4ce/dotfiles), I suggest following this.**
