@@ -75,14 +75,14 @@ Install Arch Linux inside chroot environment using same user environment
 https://github.com/owl4ce/archroot
 ```
 ### Installing chroot environment
-Download link see [here](https://www.archlinux.org/download/). Then do,
+Download link see [here](https://www.archlinux.org/download/). Then do
 ```bash
-sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
+$ sudo archroot -c archlinux-bootstrap-tarball-download-link.tar.gz
 ```
 **Example link**: http://mirrors.evowise.com/archlinux/iso/2020.11.01/archlinux-bootstrap-2020.11.01-x86_64.tar.gz  
 **Tips**: Skip tarball download process, just put the downloaded tarball file to `/opt/archroot/`. Then do
 ```bash
-sudo archroot -c fill-anything-hahah
+$ sudo archroot -c fill-anything
 ```
 
 ### Mounting chroot API filesystems
@@ -123,7 +123,9 @@ $ archroot commands
 
 #### Remount `/run`
 When you make Archroot automatically mount API filesystems when host boots, there is usually `$XDG_RUNTIME_DIR` is not visible in chroot environment, remounting will make it visible.
-> **Default**: yes
+
+So because of this, I [prefer manual mount](#mounting-chroot-api-filesystems) after host system boots.  
+So Archroot is only needed when it's needed.
 
 ```bash
 $ archroot -r
@@ -170,9 +172,9 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
 <summary><strong>Include pacman package manager from Archroot into neofetch host</strong></summary>
 
   ```bash
-  sudo $EDITOR `which neofetch`
+  $ sudo $EDITOR `which neofetch`
   ```
-  Then edit this section:
+  Then edit this section
   ```cfg
   1305     case "$os" in
   1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
@@ -192,7 +194,7 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
   1320             has "alps"	  && tot alps showinstalled
   1321             has "butch"	  && tot butch list
   ```
-  into:
+  into
   ```cfg
   1305     case "$os" in
   1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
@@ -247,8 +249,8 @@ $ archroot rofi -show drun
 
 Then you can add it as a DE/WM keybind (e.g: OpenboxWM):
 > Need [bypass root password question](#bypass-root-password-question).
-```bash
-$ bash -c 'archroot rofi -show drun'
+```cfg
+bash -c 'archroot rofi -show drun'
 ```
 
 **If you use my [dotfiles](https://github.com/owl4ce/dotfiles), I suggest following this.**
