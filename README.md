@@ -24,7 +24,7 @@ Thanks to [@lemniskett](https://github.com/lemniskett)
 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
 ```bash
-git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./install.sh
+$ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./install.sh
 ```
 > - Arch Linux root directory will be installed to `/opt/archroot/root.x86_64/` after extracting tarball.
 > - `archroot.conf` will be installed to `/etc/archroot.conf`.
