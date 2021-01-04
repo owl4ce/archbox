@@ -9,7 +9,7 @@ function checkdep {
 }
 
 function err {
-    echo "$(tput bold)$(tput setaf 1)==> $@ $(tput sgr0)"
+    echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@"
     exit 1
 }
 
@@ -22,7 +22,7 @@ case $1 in
     --uninstall)
         [[ -f /usr/local/bin/archroot ]] && source /etc/archroot.conf && clear && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            archroot -s
+            /usr/local/bin/archroot -s
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
             err "Exiting... to anticipate damaged host system!"
         else

@@ -6,20 +6,12 @@ function checkdep {
 }
 
 function err {
-    echo "$(tput bold)$(tput setaf 1)==> $@ $(tput sgr0)"
+    echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@"
     exit 1
 }
 
 function msg {
-    echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
-}
-
-function msg_mnt {
-    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0) Mounted$(tput bold)$(tput setaf 2) ]$(tput sgr0)"
-}
-
-function msg_umnt {
-    echo "$(tput bold)$(tput setaf 1)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0)"
+    echo "$(tput bold)$(tput setaf 1)==> $(tput sgr0) $@"
 }
 
 function help_text {
@@ -30,7 +22,8 @@ OPTIONS:
   -c, --create URL      Creates a chroot environment.
   -m, --mount           Mount chroot API filesystems.
   -u, --unmount         Unmount chroot API filesystems.
-  -r, --remount-run     Remount /run chroot API filesystems.
+  -r, --remount-run     Remount /run to chroot environment.
+      --runtime-only    Mount $XDG_RUNTIME_DIR to chroot environment.
   -s, --status          Check mounted chroot API filesystems.
   -e, --enter           Enters chroot environment.
   -h, --help            Displays this help message.
@@ -53,87 +46,118 @@ function storeenv {
     echo "$XDG_RUNTIME_DIR" > /tmp/archroot_xdg_runtime_dir
 }
 
+function rd_msg {
+    echo "$(tput bold)$(tput setaf 1)==> Chroot API filesystems:$(tput sgr0) $@"
+}
+
+function gr_msg {
+    echo "$(tput bold)$(tput setaf 2)==> Chroot API filesystems:$(tput sgr0) $@"
+}
+
+function msg_mnt {
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Mounted$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
+}
+
+function msg_mnt_rt {
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Runtime$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
+}
+
+function msg_umnt {
+    echo "$(tput bold)$(tput setaf 1)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0)"
+}
+
 function chk_apifs {
-    if mount | grep "$CHROOT/dev" > /dev/null; then
+    if mount | grep " $CHROOT/dev " > /dev/null; then
         msg_mnt "$CHROOT/dev"
     else
         msg_umnt "$CHROOT/dev"
     fi
-    if mount | grep "$CHROOT/home" > /dev/null; then
+    if mount | grep " $CHROOT/home " > /dev/null; then
         msg_mnt "$CHROOT/home"
     else
         msg_umnt "$CHROOT/home"
     fi
-    if mount | grep "$CHROOT/usr/lib/modules" > /dev/null; then
+    if mount | grep " $CHROOT/usr/lib/modules " > /dev/null; then
         msg_mnt "$CHROOT/lib/modules"
     else
         msg_umnt "$CHROOT/lib/modules"
     fi
-    if mount | grep "$CHROOT/proc" > /dev/null; then
+    if mount | grep " $CHROOT/proc " > /dev/null; then
         msg_mnt "$CHROOT/proc"
     else
         msg_umnt "$CHROOT/proc"
     fi
-    if mount | grep "$CHROOT/run" > /dev/null; then
+    if mount | grep " $CHROOT/run " > /dev/null; then
         msg_mnt "$CHROOT/run"
     else
-        msg_umnt "$CHROOT/run"
+        if mount | grep " $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) " > /dev/null; then
+            msg_mnt_rt "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir)"
+        else
+            msg_umnt "$CHROOT/run"
+        fi
     fi
-    if mount | grep "$CHROOT/sys" > /dev/null; then
+    if mount | grep " $CHROOT/sys " > /dev/null; then
         msg_mnt "$CHROOT/sys"
     else
         msg_umnt "$CHROOT/sys"
     fi
-    if mount | grep "$CHROOT/tmp" > /dev/null; then
+    if mount | grep " $CHROOT/tmp " > /dev/null; then
         msg_mnt "$CHROOT/tmp"
     else
         msg_umnt "$CHROOT/tmp"
     fi
-    if mount | grep "$CHROOT/var/lib/dbus" > /dev/null; then
+    if mount | grep " $CHROOT/var/lib/dbus " > /dev/null; then
         msg_mnt "$CHROOT/var/lib/dbus"
     else
         msg_umnt "$CHROOT/var/lib/dbus"
     fi
 }
 
+if [[ $VERBOSE_MSG = "yes" ]]; then
+    Rvar="-Rv"
+    Tvar="-vt"
+    Lvar="-lv"
+else
+    Rvar="-R"
+    Tvar="-t"
+    Lvar="-l"
+fi
+
+if [[ $EUID -ne 0 ]]; then
+    mount="$PRIV mount"
+    umount="$PRIV umount"
+else
+    mount="mount"
+    umount="umount"
+fi
+
 function mnt_apifs {
-    case $1 in
-        root)
-            mount -Rv /dev $CHROOT/dev
-            mount --make-rslave $CHROOT/dev
-            mount -Rv /home $CHROOT/home
-            mount -Rv /lib/modules $CHROOT/lib/modules
-            mount -vt proc /proc $CHROOT/proc
-            mount -Rv /run $CHROOT/run
-            mount -Rv /sys $CHROOT/sys
-            mount --make-rslave $CHROOT/sys
-            mount -Rv /tmp $CHROOT/tmp
-            mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
-        ;;
-        user)
-            $PRIV mount -Rv /dev $CHROOT/dev
-            $PRIV mount --make-rslave $CHROOT/dev
-            $PRIV mount -Rv /home $CHROOT/home
-            $PRIV mount -Rv /lib/modules $CHROOT/lib/modules
-            $PRIV mount -vt proc /proc $CHROOT/proc
-            $PRIV mount -Rv /run $CHROOT/run
-            $PRIV mount -Rv /sys $CHROOT/sys
-            $PRIV mount --make-rslave $CHROOT/sys
-            $PRIV mount -Rv /tmp $CHROOT/tmp
-            $PRIV mount -Rv /var/lib/dbus $CHROOT/var/lib/dbus
-        ;;
-    esac
+    $mount $Rvar /dev $CHROOT/dev
+    $mount --make-rslave $CHROOT/dev
+    $mount $Rvar /home $CHROOT/home
+    $mount $Rvar /lib/modules $CHROOT/lib/modules
+    $mount $Tvar proc /proc $CHROOT/proc
+    [[ $MOUNT_RUN = "yes" ]] && $mount $Rvar /run $CHROOT/run
+    $mount $Rvar /sys $CHROOT/sys
+    $mount --make-rslave $CHROOT/sys
+    $mount $Rvar /tmp $CHROOT/tmp
+    $mount $Rvar /var/lib/dbus $CHROOT/var/lib/dbus
 }
 
 function umnt_apifs {
-    $PRIV umount -Rv $CHROOT/dev
-    $PRIV umount -Rv $CHROOT/home
-    $PRIV umount -Rv $CHROOT/lib/modules
-    $PRIV umount -Rv $CHROOT/proc
-    $PRIV umount -Rv $CHROOT/run
-    $PRIV umount -Rv $CHROOT/sys
-    $PRIV umount -Rv $CHROOT/tmp
-    $PRIV umount -Rv $CHROOT/var/lib/dbus
+    $umount $Rvar $CHROOT/dev
+    $umount $Rvar $CHROOT/home
+    $umount $Rvar $CHROOT/lib/modules
+    $umount $Rvar $CHROOT/proc
+    if mount | grep "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir)" > /dev/null; then
+        $umount $Rvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+    fi
+    if mount | grep "$CHROOT/run" > /dev/null; then
+        $umount $Rvar $CHROOT/run
+    fi
+    $umount $Rvar $CHROOT/sys
+    $umount $Rvar $CHROOT/tmp
+    $umount $Rvar $CHROOT/var/lib/dbus
 }
 
 function redirx {
@@ -165,63 +189,75 @@ case $1 in
         msg "Mounting chroot API filesystems..."
         mkdir -p $CHROOT/lib/modules
         mkdir -p $CHROOT/var/lib/dbus
-        mnt_apifs root
+        mnt_apifs
         /usr/local/bin/archroot -s
         echo "$USER" > /tmp/archroot_localuser
         cp $INSTALL_PATH/archsetup $CHROOT/archsetup
+        cp /etc/machine-id $CHROOT/etc/machine-id
         chroot $CHROOT /bin/bash -c "./archsetup"
         msg "Archroot installation was successful"
     ;;
     -m|--mount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            chk_apifs | column -t
-            msg "Chroot API filesystems: Already mounted"
+            /usr/local/bin/archroot -s
         else
-            msg "Mounting chroot API filesystems..."
-            mnt_apifs user
-            archroot -s
+            gr_msg "Mounting..."
+            mnt_apifs
+            /usr/local/bin/archroot -s
         fi
     ;;
     -u|--unmount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            msg "Unmounting chroot API filesystems..."
+            gr_msg "Unmounting..."
             umnt_apifs
-            archroot -s
-            msg "If failed to unmount simply reboot host!"
+            /usr/local/bin/archroot -s
+            gr_msg "If failed to unmount simply try again or reboot host system!"
         else
-            chk_apifs | column -t
-            err "Chroot API filesystems: Not mounted"
+            /usr/local/bin/archroot -s
         fi
     ;;
     -r|--remount-run)
-        function rr {
-                if mount | grep "$CHROOT/run" > /dev/null; then
-                    msg_mnt "$CHROOT/run"
-                else
-                    msg_umnt "$CHROOT/run"
-                fi
-        }
-        if mount | grep "$CHROOT/run" > /dev/null; then
-            msg "Remounting /run chroot API filesystems..."
-            $PRIV umount -lv $CHROOT/run
-            $PRIV mount -Rv /run $CHROOT/run
-            msg "Checking /run chroot API filesystems..."
-            rr | column -t
-            msg "Chroot API filesystems: /run remounted successfuly"
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            if mount | grep " $CHROOT/run " > /dev/null; then                
+                gr_msg "Remounting /run ..."
+                $umount $Lvar $CHROOT/run
+                $mount $Rvar /run $CHROOT/run 2> /dev/null
+                /usr/local/bin/archroot -s
+                gr_msg "/run remounted successfuly"
+            else
+                /usr/local/bin/archroot -s
+                rd_msg "Failed to remount /run"
+            fi
         else
-            msg "Checking /run chroot API filesystems..."
-            rr | column -t
-            err "Chroot API filesystems: /run not mounted"
+            /usr/local/bin/archroot -s
+            gr_msg "Please mount chroot API filesystems before remount /run !"
+            rd_msg "Failed to remount /run"
+        fi
+    ;;
+    --runtime-only)
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
+            /usr/local/bin/archroot -s
+            gr_msg "Mounting $XDG_RUNTIME_DIR only..."
+            [[ ! -e $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) ]] && $PRIV mkdir -p $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+            $umount $Rvar $CHROOT/run 2> /dev/null
+            $umount $Lvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) 2> /dev/null
+            $mount $Rvar $(cat /tmp/archroot_xdg_runtime_dir) $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+            /usr/local/bin/archroot -s
+        else
+            /usr/local/bin/archroot -s
+            gr_msg "Please mount chroot API filesystems before mounting $XDG_RUNTIME_DIR only!"
+            rd_msg "Failed to mount $XDG_RUNTIME_DIR"
         fi
     ;;
     -s|--status)
-        msg "Checking mounted chroot API filesystems..."
+        gr_msg "Checking mounted chroot API filesystems..."
         chk_apifs | column -t
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            msg "Chroot API filesystems: Mounted"
+            gr_msg "Mounted"
         else
-            err "Chroot API filesystems: Unmounted"
+            rd_msg "Unmounted"
         fi
+        [[ $MOUNT_RUN != "yes" ]] && rd_msg "/run recursive mount option is disabled in /etc/archroot.conf"
     ;;
     -e|--enter)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
@@ -230,8 +266,8 @@ case $1 in
             $PRIV $INSTALL_PATH/copyresolv
             $PRIV $INSTALL_PATH/command enter
         else
-            archroot -s
-            msg "Please mount chroot API filesystems before entering chroot environment!"
+            /usr/local/bin/archroot -s
+            gr_msg "Please mount chroot API filesystems before entering chroot environment!"
         fi
 	;;
     -h|--help)
@@ -241,7 +277,7 @@ case $1 in
         help_text
     ;;
     -*)
-        err "Unknown option: $1"
+        err "Unknown option $1"
     ;;
     *)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
@@ -251,8 +287,8 @@ case $1 in
             COMMAND=$(echo $@ | tr ' ' '\ ')
             $PRIV $INSTALL_PATH/command $COMMAND
         else
-            archroot -s
-            msg "Please mount chroot API filesystems before using chroot environment command directly!"
+            /usr/local/bin/archroot -s
+            gr_msg "Please mount chroot API filesystems before using chroot environment command directly!"
         fi
     ;;
 esac
