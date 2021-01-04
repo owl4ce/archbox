@@ -29,7 +29,7 @@ case $1 in
             [[ -f /usr/local/bin/archroot ]] && \
             clear
             while true; do
-            msg "This will remove following:"
+            msg "This will remove following"
             echo "/usr/local/bin/archroot"
             echo "$INSTALL_PATH/*"
             echo "/etc/archroot.conf"
@@ -47,30 +47,64 @@ case $1 in
         fi
     ;;
     *)
-        [[ -f /usr/local/bin/archroot ]] && err "Archroot already installed. Exiting..."
-        clear
-        msg "The basic configuration is as follows:"
-        cat ./archroot/archroot.conf
-        msg "First, specify the local username, etc."
-        echo -n "Editor of your choice (e.g: nano): "
-        read TEXT_EDITOR
-        checkdep $TEXT_EDITOR
-        cp ./archroot/archroot.conf ./archroot/archroot.conf_new
-        $TEXT_EDITOR ./archroot/archroot.conf_new || exit 1
-        source ./archroot/archroot.conf
-        clear
-        msg "Installing files..."
-        # DONT CHANGE THIS
-        mkdir -pv $INSTALL_PATH
-        install -v -D -m 755 ./archroot/archroot /usr/local/bin/archroot
-        install -v -D -m 755 ./archroot/archroot.conf_new /etc/archroot.conf
-        install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
-        install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
-        install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
-        install -v -D -m 755 ./archroot/installyay $INSTALL_PATH/installyay
-        rm ./archroot/archroot.conf_new
-        echo ""
-        msg "Installation was successful"
-        archroot
+        if [[ -f /usr/local/bin/archroot ]]; then
+            while true; do
+            read -p $'\e[1;32m==> Archroot already installed, are you sure you want to reinstall/upgrade? \e[1;33m(without remove currently chroot env) \e[1;35m(y/n)\e[0m ' yn
+                case $yn in
+                    [Yy]* ) clear
+                            msg "The basic configuration is as follows"
+                            cat ./archroot/archroot.conf
+                            msg "First, specify the local username, etc."
+                            echo -n "Editor of your choice (e.g: nano): "
+                            read TEXT_EDITOR
+                            checkdep $TEXT_EDITOR
+                            cp ./archroot/archroot.conf ./archroot/archroot.conf_new
+                            $TEXT_EDITOR ./archroot/archroot.conf_new || exit 1
+                            source ./archroot/archroot.conf_new
+                            clear
+                            msg "Installing files..."
+                            # DONT CHANGE THIS
+                            mkdir -pv $INSTALL_PATH
+                            install -v -D -m 755 ./archroot/archroot /usr/local/bin/archroot
+                            install -v -D -m 755 ./archroot/archroot.conf_new /etc/archroot.conf
+                            install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
+                            install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
+                            install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
+                            rm ./archroot/archroot.conf_new
+                            msg "Installation was successful"
+                            echo ""
+                            /usr/local/bin/archroot
+                            echo ""
+                            break;;
+                    [Nn]* ) exit;;
+                    * ) err "Please answer yes or no!";;
+                esac
+            done
+        else
+            clear
+            msg "The basic configuration is as follows"
+            cat ./archroot/archroot.conf
+            msg "First, specify the local username, etc."
+            echo -n "Editor of your choice (e.g: nano): "
+            read TEXT_EDITOR
+            checkdep $TEXT_EDITOR
+            cp ./archroot/archroot.conf ./archroot/archroot.conf_new
+            $TEXT_EDITOR ./archroot/archroot.conf_new || exit 1
+            source ./archroot/archroot.conf_new
+            clear
+            msg "Installing files..."
+            # DONT CHANGE THIS
+            mkdir -pv $INSTALL_PATH
+            install -v -D -m 755 ./archroot/archroot /usr/local/bin/archroot
+            install -v -D -m 755 ./archroot/archroot.conf_new /etc/archroot.conf
+            install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
+            install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
+            install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
+            rm ./archroot/archroot.conf_new
+            msg "Installation was successful"
+            echo ""
+            /usr/local/bin/archroot
+            echo ""
+        fi
     ;;
 esac
