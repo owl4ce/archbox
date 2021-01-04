@@ -136,7 +136,7 @@ $ archroot -r
 </details>
 
 #### Mount `$XDG_RUNTIME_DIR` (NixOS-specific issues)
-Mounting `/run` somehow breaks NixOS, set `MOUNT_RUN` in `/etc/archbox.conf` to "no" to disable mounting `/run`, then unmount API filesystems then mount again first and do
+Mounting `/run` somehow breaks NixOS, set `MOUNT_RUN` in `/etc/archbox.conf` to "no" to disable mounting `/run`, then unmount API filesystems and mount it again first. Then do
 
 ```bash
 $ archroot --runtime-only
