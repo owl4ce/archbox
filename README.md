@@ -158,12 +158,14 @@ $ sudo visudo
 ```
 Then add this to the bottom line (`/etc/sudoers`):
 ```cfg
-%wheel  ALL=(root) NOPASSWD: /opt/archroot/copyresolv,/opt/archroot/command
+%wheel  ALL=(root) NOPASSWD: mount,umount,/opt/archroot/copyresolv,/opt/archroot/command
 ```
 
 **DOAS**  
 Add this to `/etc/doas.conf`:
 ```cfg
+permit nopass keepenv :wheel as root cmd mount
+permit nopass keepenv :wheel as root cmd umount
 permit nopass keepenv :wheel as root cmd /opt/archroot/copyresolv
 permit nopass keepenv :wheel as root cmd /opt/archroot/command
 ```
