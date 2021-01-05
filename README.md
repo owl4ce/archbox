@@ -176,6 +176,8 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
   ```
   Then edit this section
   ```cfg
+  ...
+  
   1305     case "$os" in
   1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
   1307             # Package Manager Programs.
@@ -193,9 +195,13 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
   1319             has "sorcery"    && tot gaze installed
   1320             has "alps"	  && tot alps showinstalled
   1321             has "butch"	  && tot butch list
+  
+  ...
   ```
   into
   ```cfg
+  ...
+  
   1305     case "$os" in
   1306         "Linux" | "BSD" | "iPhone OS" | "Solaris")
   1307             # Package Manager Programs.
@@ -217,6 +223,8 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
   1323                archroot pacman -Q
   1324             }
   1325             has "pacman" && tot pacman
+  
+  ...
   ```
 
 </details>
@@ -257,6 +265,8 @@ bash -c 'archroot rofi -show drun'
 
 Edit [`~/.config/openbox/rc.xml`](https://github.com/owl4ce/dotfiles/blob/master/.config/openbox/rc.xml), then add this to keyboard tag:
 ```cfg
+...
+
 453 <!-- ARCHROOT -->
 454     <keybind key="A-r">
 455       <action name="Execute">
@@ -268,6 +278,8 @@ Edit [`~/.config/openbox/rc.xml`](https://github.com/owl4ce/dotfiles/blob/master
 461        <command>bash -c 'urxvt -e archroot --enter'</command>
 462      </action>
 463    </keybind>
+
+...
 ```
 It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kbd> and launch Archroot terminal by pressing <kbd>Super + Shift + Enter</kbd>.
 
