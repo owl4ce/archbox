@@ -12,22 +12,18 @@
 
 Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (oh actually not being comfortable) with installing wine (for example) on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
-Thanks to [@lemniskett](https://github.com/lemniskett)
+Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 
 ## :syringe: Installation 
 #### Dependencies
-- text editor (e.g: nano)
-- bash
-- tar
-- wget
-- xorg-xhost
+`bash` `tar` `wget` `xorg-xhost`
 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
 ```bash
 $ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./install.sh
 ```
 > - Arch Linux root directory will be installed to `/opt/archroot/root.x86_64/` after extracting tarball.
-> - `archroot.conf` will be installed to `/etc/archroot.conf`.
+> - Configuration will be installed to `/etc/archroot.conf`.
 
 ### `archroot.conf`
 #### Adding environment variables
