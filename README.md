@@ -288,7 +288,7 @@ Host Environment|Chroot Environment
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`.
 ```bash
-sudo install.sh --uninstall
+$ sudo install.sh --uninstall
 ```
   
 <p align="center"><img src="./screenshots/uninstall.png"/></p>
