@@ -90,8 +90,8 @@ function chk_apifs {
     if mount | grep " $CHROOT/run " > /dev/null; then
         msg_mnt "$CHROOT/run"
     else
-        if mount | grep " $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) " > /dev/null; then
-            msg_mnt_rt "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir)"
+        if mount | grep " $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) " > /dev/null; then
+            msg_mnt_rt "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)"
         else
             msg_umnt "$CHROOT/run"
         fi
@@ -149,8 +149,8 @@ function umnt_apifs {
     $umount $Rvar $CHROOT/home
     $umount $Rvar $CHROOT/lib/modules
     $umount $Rvar $CHROOT/proc
-    if mount | grep "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir)" > /dev/null; then
-        $umount $Rvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+    if mount | grep "$CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)" > /dev/null; then
+        $umount $Rvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)
     fi
     if mount | grep "$CHROOT/run" > /dev/null; then
         $umount $Rvar $CHROOT/run
@@ -164,6 +164,8 @@ function redirx {
     checkdep xhost
     xhost +local: > /dev/null
 }
+
+storeenv
 
 case $1 in
     -c|--create)
@@ -238,10 +240,10 @@ case $1 in
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             /usr/local/bin/archroot -s
             gr_msg "Mounting $XDG_RUNTIME_DIR only..."
-            [[ ! -e $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) ]] && $PRIV mkdir -p $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+            [[ ! -e $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) ]] && $PRIV mkdir -p $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)
             $umount $Rvar $CHROOT/run 2> /dev/null
-            $umount $Lvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir) 2> /dev/null
-            $mount $Rvar $(cat /tmp/archroot_xdg_runtime_dir) $CHROOT$(cat /tmp/archroot_xdg_runtime_dir)
+            $umount $Lvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) 2> /dev/null
+            $mount $Rvar $(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)
             /usr/local/bin/archroot -s
         else
             /usr/local/bin/archroot -s
@@ -262,7 +264,6 @@ case $1 in
     -e|--enter)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             redirx
-            storeenv
             $PRIV $INSTALL_PATH/copyresolv
             $PRIV $INSTALL_PATH/command enter
         else
@@ -281,7 +282,6 @@ case $1 in
     ;;
     *)
         redirx
-        storeenv
         $PRIV $INSTALL_PATH/copyresolv
         COMMAND=$(echo $@ | tr ' ' '\ ')
         $PRIV $INSTALL_PATH/command $COMMAND
