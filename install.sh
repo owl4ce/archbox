@@ -5,7 +5,7 @@ function asroot {
 }
 
 function checkdep {
-    which $1 &> /dev/null || err "$1 is not installed. Please install it first!"
+    which $1 2> /dev/null || err "$1 is not installed. Please install it first!"
 }
 
 function err {
