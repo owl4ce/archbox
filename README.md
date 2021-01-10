@@ -120,7 +120,7 @@ $ archroot commands
 #### Remount `/run`
 When you make Archroot automatically mount API filesystems when host boots, there is usually `$XDG_RUNTIME_DIR` is not visible in chroot environment, remounting will make it visible.
 
-So because of this, I [prefer manual mount](#mounting-chroot-api-filesystems) after host system boots.  
+So because of this, I prefer [manual mount](#mounting-chroot-api-filesystems) after host system boots.  
 So Archroot is only needed when it's needed.
 
 ```bash
@@ -133,7 +133,9 @@ $ archroot -r
 
 </details>
 
-#### Mount `$XDG_RUNTIME_DIR` (NixOS-specific issues)
+#### Mount `$XDG_RUNTIME_DIR`
+> NixOS-specific issues
+
 Mounting `/run` somehow breaks NixOS, set `MOUNT_RUN` in `/etc/archbox.conf` to "no" to disable mounting `/run`, then unmount API filesystems and mount it again first. Then do
 
 ```bash
