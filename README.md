@@ -20,7 +20,7 @@ Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
 ```bash
-$ git clone https://github.com/owl4ce/archroot.git && cd archroot && sudo ./install.sh
+$ git clone https://github.com/owl4ce/archroot.git && sudo ./archroot/install.sh
 ```
 > - Arch Linux root directory will be installed to `/opt/archroot/root.x86_64/` after extracting tarball.
 > - Configuration will be installed to `/etc/archroot.conf`.
@@ -247,7 +247,7 @@ Archroot will not read resources from host `/usr/share` directory. Because to av
 ### Installing yay AUR Helper
 Just run this in chroot environment (`--enter`):
 ```bash
-$ git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
+$ git clone https://aur.archlinux.org/yay-bin.git && cd ./yay-bin && makepkg -si && cd .. && rm -rf yay-bin
 ```
 
 ## :confetti_ball: Improving usage
