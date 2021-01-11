@@ -10,7 +10,7 @@
 
 <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-b1122b6b-6d37-43d6-a727-cf63df935e6d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLWIxMTIyYjZiLTZkMzctNDNkNi1hNzI3LWNmNjNkZjkzNWU2ZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.tEYdZ6q3iLK_X3f4gQer7Sn23nWGk_lA9JsGThIIbis" alt="preview" align="right" width="400px">
 
-Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (oh actually not being comfortable) with installing wine (for example) on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
+Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (oh actually not being comfortable) with installing wine (multilib/32-bit) on Gentoo, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [@owl4ce](https://github.com/owl4ce)
 
 Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 
@@ -51,6 +51,12 @@ Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd]
 17 VERBOSE_MSG="no"
 18 # Mount /run ?
 19 MOUNT_RUN="yes"
+```
+
+After installing, you will see a shell prompt when you enter Archroot environment.
+```bash
+$ archroot --enter
+(Archroot) $
 ```
 
 ## :anchor: Usage
@@ -117,12 +123,19 @@ $ archroot commands
 ### Known issues
 > See spesifics at [lemniskett/archbox#known-issues](https://github.com/lemniskett/archbox#known-issues).
 
+#### Late package version
+This can be seen when installing a package like `imagemagick`, I often experience it when doing reinstall test several times. Somehow sometimes this happens. The solution is quite easy, just install `reflector` and generate latest mirror list.
+
+```bash
+(Archroot) $ sudo pacman -S reflector
+(Archroot) $ sudo reflector --verbose --latest 5 --sort rate --protocol http --protocol https --save /etc/pacman.d/mirrorlist
+```
+
 #### Remount `/run`
 When you make Archroot automatically mount API filesystems when host boots, there is usually `$XDG_RUNTIME_DIR` is not visible in chroot environment, remounting will make it visible.
 
 So because of this, I prefer [manual mount](#mounting-chroot-api-filesystems) after host system boots.  
 So Archroot is only needed when it's needed.
-
 ```bash
 $ archroot -r
 ```
@@ -137,7 +150,6 @@ $ archroot -r
 > NixOS-specific issues
 
 Mounting `/run` somehow breaks NixOS, set `MOUNT_RUN` in `/etc/archbox.conf` to "no" to disable mounting `/run`, then unmount API filesystems and mount it again first. Then do
-
 ```bash
 $ archroot --runtime-only
 ```
@@ -241,13 +253,7 @@ $ git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -si
 ## :confetti_ball: Improving usage
 ### Using rofi as application launcher
 First, install rofi in the Archroot.
-- Using commands directly
 ```bash
-$ archroot sudo pacman -S rofi
-```
-- Entering chroot environment firstly
-```bash
-$ archroot -e
 (Archroot) $ sudo pacman -S rofi
 ```
 Basic usage:
