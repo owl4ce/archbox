@@ -1,20 +1,50 @@
 #!/usr/bin/env bash
 source /etc/archroot.conf
 
-function checkdep {
-    which $1 > /dev/null 2>&1 || err "$1 is not installed. Please install it first!"
+if [[ $VERBOSE_MSG = "yes" ]]; then
+    Rvar="-Rv"
+    Tvar="-vt"
+    Lvar="-lv"
+else
+    Rvar="-R"
+    Tvar="-t"
+    Lvar="-l"
+fi
+
+if [[ $EUID -ne 0 ]]; then
+    mount="$PRIV mount"
+    umount="$PRIV umount"
+else
+    mount="mount"
+    umount="umount"
+fi
+
+checkdep() { which $1 > /dev/null 2>&1 || err "$1 is not installed. Please install it first!"; }
+err() { echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@" && exit 1; }
+msg() { echo "$(tput bold)$(tput setaf 2)==>$(tput sgr0) $@"; }
+asroot() { [[ $EUID -ne 0 ]] && err "Run this as root!"; }
+copyresolv() { $PRIV $INSTALL_PATH/copyresolv; }
+rd_msg() { echo "$(tput bold)$(tput setaf 1)==> Chroot API filesystems:$(tput sgr0) $@"; }
+gr_msg() { echo "$(tput bold)$(tput setaf 2)==> Chroot API filesystems:$(tput sgr0) $@"; }
+
+msg_mnt() {
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Mounted$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
 }
 
-function err {
-    echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@"
-    exit 1
+msg_mnt_rt() {
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Runtime$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
 }
 
-function msg {
-    echo "$(tput bold)$(tput setaf 2)==>$(tput sgr0) $@"
+msg_umnt() {
+    echo "$(tput bold)$(tput setaf 1)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0)"
 }
 
-function help_text {
+storeenv() {
+    echo "$DBUS_SESSION_BUS_ADDRESS" > /tmp/archroot_dbus_session_address
+    echo "$XDG_RUNTIME_DIR" > /tmp/archroot_xdg_runtime_dir
+}
+
+help_text() {
 cat << EOF
 USAGE: archroot OPTIONS
 
@@ -33,40 +63,7 @@ https://github.com/owl4ce/archroot
 EOF
 }
 
-function asroot {
-    [[ $EUID -ne 0 ]] && err "Run this as root!"
-}
-
-function copyresolv {
-    $PRIV $INSTALL_PATH/copyresolv
-}
-
-function storeenv {
-    echo "$DBUS_SESSION_BUS_ADDRESS" > /tmp/archroot_dbus_session_address
-    echo "$XDG_RUNTIME_DIR" > /tmp/archroot_xdg_runtime_dir
-}
-
-function rd_msg {
-    echo "$(tput bold)$(tput setaf 1)==> Chroot API filesystems:$(tput sgr0) $@"
-}
-
-function gr_msg {
-    echo "$(tput bold)$(tput setaf 2)==> Chroot API filesystems:$(tput sgr0) $@"
-}
-
-function msg_mnt {
-    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Mounted$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
-}
-
-function msg_mnt_rt {
-    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 2)[$(tput sgr0)  Runtime$(tput bold)$(tput setaf 2)  ]$(tput sgr0)"
-}
-
-function msg_umnt {
-    echo "$(tput bold)$(tput setaf 1)*$(tput sgr0) $@" "$(tput bold)$(tput setaf 1)[$(tput sgr0) Unmounted$(tput bold)$(tput setaf 1) ]$(tput sgr0)"
-}
-
-function chk_apifs {
+chk_apifs() {
     if mount | grep " $CHROOT/dev " > /dev/null; then
         msg_mnt "$CHROOT/dev"
     else
@@ -113,25 +110,7 @@ function chk_apifs {
     fi
 }
 
-if [[ $VERBOSE_MSG = "yes" ]]; then
-    Rvar="-Rv"
-    Tvar="-vt"
-    Lvar="-lv"
-else
-    Rvar="-R"
-    Tvar="-t"
-    Lvar="-l"
-fi
-
-if [[ $EUID -ne 0 ]]; then
-    mount="$PRIV mount"
-    umount="$PRIV umount"
-else
-    mount="mount"
-    umount="umount"
-fi
-
-function mnt_apifs {
+mnt_apifs() {
     $mount $Rvar /dev $CHROOT/dev
     $mount --make-rslave $CHROOT/dev
     $mount $Rvar /home $CHROOT/home
@@ -144,7 +123,7 @@ function mnt_apifs {
     $mount $Rvar /var/lib/dbus $CHROOT/var/lib/dbus
 }
 
-function umnt_apifs {
+umnt_apifs() {
     $umount $Rvar $CHROOT/dev
     $umount $Rvar $CHROOT/home
     $umount $Rvar $CHROOT/lib/modules
@@ -160,44 +139,45 @@ function umnt_apifs {
     $umount $Rvar $CHROOT/var/lib/dbus
 }
 
-function redirx {
-    checkdep xhost
-    xhost +local: > /dev/null
-}
+redirx() { checkdep xhost && xhost +local: > /dev/null; }
 
 storeenv
 
 case $1 in
     -c|--create)
         asroot
-        [[ -z $2 ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
-        cd $INSTALL_PATH
-        msg "Downloading Arch Linux tarball..."
-        [[ ! -f ./archlinux.tar.gz ]] && checkdep wget && wget -q --show-progress -O archlinux.tar.gz $2 && \
-        [[ -f ./archlinux.tar.gz ]] && msg "Arch Linux tarball downloaded"
-        msg "Extracting the tarball..."
-        rm -r ./root.x86_64 2> /dev/null
-        tar xzf archlinux.tar.gz 2> /dev/null
-        msg "Enabling internet connection in chroot environment..."
-        cp /etc/resolv.conf $CHROOT/etc/resolv.conf
-        msg "You will need to edit which mirror you want to use, uncomment needed mirrors and save it!"
-        echo -n "Editor of your choice (e.g: nano): "
-        read TEXT_EDITOR
-        checkdep $TEXT_EDITOR
-        $TEXT_EDITOR $CHROOT/etc/pacman.d/mirrorlist || exit 1
-        msg "Disabling Pacman's CheckSpace..."
-        checkdep sed
-        sed -i 's_CheckSpace_#CheckSpace_' $CHROOT/etc/pacman.conf
-        msg "Mounting chroot API filesystems..."
-        mkdir -p $CHROOT/lib/modules
-        mkdir -p $CHROOT/var/lib/dbus
-        mnt_apifs
-        /usr/local/bin/archroot -s
-        echo "$USER" > /tmp/archroot_localuser
-        cp $INSTALL_PATH/archsetup $CHROOT/archsetup
-        cp /etc/machine-id $CHROOT/etc/machine-id
-        chroot $CHROOT /bin/bash -c "./archsetup"
-        msg "Archroot installation was successful"
+        if [[ ! -e $INSTALL_PATH/root.x86_64 ]]; then
+            [[ -z $2 ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
+            cd $INSTALL_PATH
+            msg "Downloading Arch Linux tarball..."
+            [[ ! -f ./archlinux.tar.gz ]] && checkdep wget && wget -q --show-progress -O archlinux.tar.gz $2 && \
+            [[ -f ./archlinux.tar.gz ]] && msg "Arch Linux tarball downloaded"
+            msg "Extracting the tarball..."
+            rm -r ./root.x86_64 2> /dev/null
+            tar xzf archlinux.tar.gz 2> /dev/null
+            msg "Enabling internet connection in chroot environment..."
+            cp /etc/resolv.conf $CHROOT/etc/resolv.conf
+            msg "You will need to edit which mirror you want to use, uncomment needed mirrors and save it!"
+            echo -n "Editor of your choice (e.g: nano): "
+            read TEXT_EDITOR
+            checkdep $TEXT_EDITOR
+            $TEXT_EDITOR $CHROOT/etc/pacman.d/mirrorlist || exit 1
+            msg "Disabling Pacman's CheckSpace..."
+            checkdep sed
+            sed -i 's_CheckSpace_#CheckSpace_' $CHROOT/etc/pacman.conf
+            msg "Mounting chroot API filesystems..."
+            mkdir -p $CHROOT/lib/modules
+            mkdir -p $CHROOT/var/lib/dbus
+            mnt_apifs
+            /usr/local/bin/archroot -s
+            echo "$USER" > /tmp/archroot_localuser
+            cp $INSTALL_PATH/archsetup $CHROOT/archsetup
+            cp /etc/machine-id $CHROOT/etc/machine-id
+            chroot $CHROOT /bin/bash -c "./archsetup"
+            msg "Arch Linux installation was successful"
+        else
+            err "Arch Linux already installed in $INSTALL_PATH/root.x86_64"
+        fi
     ;;
     -m|--mount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then

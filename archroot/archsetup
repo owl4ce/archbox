@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 L_USER="$(cat /tmp/archroot_localuser)"
 
-function err {
-    echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@"
-    exit 1
-}
-
-function msg {
-    echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"
-}
+err() { echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@" && exit 1; }
+msg() { echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"; }
 
 msg "Initializing pacman keyrings..."
 pacman-key --init
@@ -17,8 +11,8 @@ msg "Installing essential packages..."
 pacman -Syyu base base-devel xorg pulseaudio nano git --noconfirm
 msg "Installing servicectl..."
 mkdir -p /usr/local/share/servicectl/enabled
-curl -L 'https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl' > /usr/local/share/servicectl/servicectl 2> /dev/null
-curl -L 'https://raw.githubusercontent.com/lemniskett/servicectl/master/serviced' > /usr/local/share/servicectl/serviced 2> /dev/null
+curl -L "https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl" > /usr/local/share/servicectl/servicectl 2> /dev/null
+curl -L "https://raw.githubusercontent.com/lemniskett/servicectl/master/serviced" > /usr/local/share/servicectl/serviced 2> /dev/null
 chmod +x /usr/local/share/servicectl/service{d,ctl}
 ln -s /usr/local/share/servicectl/servicectl /usr/local/bin/servicectl
 ln -s /usr/local/share/servicectl/serviced /usr/local/bin/serviced
@@ -30,10 +24,10 @@ msg "Setting up timezone..."
 echo "Enter your timezone, for example: \"Asia/Jakarta\": " 
 while true; do
 	read TIMEZONE && \
-		[[ -f /usr/share/zoneinfo/$TIMEZONE ]] && \
-		ln -s /etc/localtime && \
-		ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
-		break || err "Timezone not found"
+    [[ -f /usr/share/zoneinfo/$TIMEZONE ]] && \
+    ln -s /etc/localtime && \
+    ln -s /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
+    break || err "Timezone not found"
 done
 msg "Creating user account..."
 useradd -M $L_USER
