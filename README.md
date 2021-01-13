@@ -16,6 +16,8 @@ Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 
 ## :syringe: Installation 
 #### Dependencies
+> Currently only supports X11/Xorg
+
 `bash` `tar` `wget` `xorg-xhost`
 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
