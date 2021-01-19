@@ -44,10 +44,14 @@ sed -i 's_# %wheel ALL=(ALL) NOPASSWD: ALL_%wheel ALL=(ALL) NOPASSWD: ALL_' /etc
 touch /etc/archroot
 
 # Bash Archroot Prompt
+[[ -f /home/$L_USER/.bashrc ]] && echo "" >> /home/$L_USER/.bashrc
+[[ -f /home/$L_USER/.bashrc ]] && echo "# Archroot Prompt" >> /home/$L_USER/.bashrc
 [[ -f /home/$L_USER/.bashrc ]] && echo "[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.bashrc
 [[ -f /home/$L_USER/.bashrc ]] && echo "[[ -f /etc/archroot ]] && cd ~" >> /home/$L_USER/.bashrc
 
 # ZSH Archroot Prompt
+[[ -f /home/$L_USER/.zshrc ]] && echo "" >> /home/$L_USER/.zshrc
+[[ -f /home/$L_USER/.zshrc ]] && echo "# Archroot Prompt" >> /home/$L_USER/.zshrc
 [[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"" >> /home/$L_USER/.zshrc
 [[ -f /home/$L_USER/.zshrc ]] && echo "[[ -f /etc/archroot ]] && cd ~" >> /home/$L_USER/.zshrc
 
