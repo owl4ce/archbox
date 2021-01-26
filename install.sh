@@ -11,13 +11,13 @@ case $1 in
     --uninstall)
         [[ -f /usr/local/bin/archroot ]] && source /etc/archroot.conf && clear && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            /usr/local/bin/archroot -s
+            $(which archroot -s) 2> /dev/null
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
             err "Exiting... to anticipate damaged host system!"
         else
             [[ -f /usr/local/bin/archroot ]] && \
             clear
-            /usr/local/bin/archroot -s
+            $(which archroot -s) 2> /dev/null
             while true; do
             msg "This will remove following"
             echo "/usr/local/bin/archroot"
@@ -82,7 +82,7 @@ case $1 in
             rm ./archroot/archroot.conf_new
             msg "Installation was successful"
             echo ""
-            /usr/local/bin/archroot
+            $(which archroot) 2> /dev/null
             echo ""
         fi
     ;;
