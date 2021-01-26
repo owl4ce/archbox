@@ -174,7 +174,7 @@ case $1 in
             mkdir -p $CHROOT/lib/modules
             mkdir -p $CHROOT/var/lib/dbus
             mnt_apifs
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             echo "$USER" > /tmp/archroot_localuser
             cp $INSTALL_PATH/archsetup $CHROOT/archsetup
             cp /etc/machine-id $CHROOT/etc/machine-id
@@ -187,21 +187,21 @@ case $1 in
     ;;
     -m|--mount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
         else
             gr_msg "Mounting..."
             mnt_apifs
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
         fi
     ;;
     -u|--unmount)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             gr_msg "Unmounting..."
             umnt_apifs
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             gr_msg "If failed to unmount simply try again or reboot host system!"
         else
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
         fi
     ;;
     -r|--remount-run)
@@ -210,29 +210,29 @@ case $1 in
                 gr_msg "Remounting /run ..."
                 $umount $Lvar $CHROOT/run
                 $mount $Rvar /run $CHROOT/run 2> /dev/null
-                $(which archroot -s) 2> /dev/null
+                $(which archroot) -s 2> /dev/null
                 gr_msg "/run remounted successfuly"
             else
-                $(which archroot -s) 2> /dev/null
+                $(which archroot) -s 2> /dev/null
                 rd_msg "Failed to remount /run"
             fi
         else
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             gr_msg "Please mount chroot API filesystems before remount /run !"
             rd_msg "Failed to remount /run"
         fi
     ;;
     --runtime-only)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             gr_msg "Mounting $XDG_RUNTIME_DIR only..."
             [[ ! -e $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) ]] && $PRIV mkdir -p $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)
             $umount $Rvar $CHROOT/run 2> /dev/null
             $umount $Lvar $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) 2> /dev/null
             $mount $Rvar $(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null) $CHROOT$(cat /tmp/archroot_xdg_runtime_dir 2> /dev/null)
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
         else
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             gr_msg "Please mount chroot API filesystems before mounting $XDG_RUNTIME_DIR only!"
             rd_msg "Failed to mount $XDG_RUNTIME_DIR"
         fi
@@ -253,7 +253,7 @@ case $1 in
             $PRIV $INSTALL_PATH/copyresolv
             $PRIV $INSTALL_PATH/command enter
         else
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             gr_msg "Please mount chroot API filesystems before entering chroot environment!"
         fi
 	;;

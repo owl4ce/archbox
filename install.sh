@@ -11,13 +11,13 @@ case $1 in
     --uninstall)
         [[ -f /usr/local/bin/archroot ]] && source /etc/archroot.conf && clear && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
             err "Exiting... to anticipate damaged host system!"
         else
             [[ -f /usr/local/bin/archroot ]] && \
             clear
-            $(which archroot -s) 2> /dev/null
+            $(which archroot) -s 2> /dev/null
             while true; do
             msg "This will remove following"
             echo "/usr/local/bin/archroot"
