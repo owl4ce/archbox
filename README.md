@@ -302,8 +302,3 @@ $ sudo install.sh --uninstall
 ```
   
 <p align="center"><img src="./screenshots/uninstall.png"/></p>
-
-## :pencil2: TODO
-This is an abridged list of future plans:
-- [ ] FreeBSD support  
-    *https://www.phoronix.com/scan.php?page=news_item&px=FreeBSD-12.2-Released*
