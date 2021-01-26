@@ -150,7 +150,7 @@ case $1 in
             [[ -z $2 ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
             cd $INSTALL_PATH
             msg "Downloading Arch Linux tarball..."
-            [[ ! -f ./archlinux.tar.gz ]] && checkdep wget && \
+            [[ ! -f ./archlinux.tar.gz ]] && checkdep curl && \
             if [[ -x "$(which "wget" 2> /dev/null)" ]]; then
                 wget -q --show-progress -O archlinux.tar.gz $2
             else
