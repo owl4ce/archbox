@@ -53,7 +53,7 @@ touch /etc/archroot
 
 # ZSH Archroot Prompt
 [[ -f /home/$L_USER/.zshrc ]] && echo "
-    
+
 # Archroot Prompt
 [[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"
 [[ -f /etc/archroot ]] && cd ~
