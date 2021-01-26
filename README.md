@@ -61,6 +61,13 @@ $ archroot --enter
 (Archroot) $
 ```
 
+You may experience the terminal getting weird when entering the archroot environment. Yes, maybe because terminfo doesn't match or doesn't exist between host and chroot environment.
+
+The solution is to simply install `<terminal>-terminfo`, here I am using `rxvt-unicode`.
+```bash
+(Archroot) $ sudo pacman -S rxvt-unicode-terminfo
+```
+
 ## :anchor: Usage
 ```bash
 USAGE: archroot OPTIONS
