@@ -252,7 +252,7 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
 Archroot will not read resources from host `/usr/share` directory. Because to avoid conflict, Archroot must have its own `/usr/share` directory. If you want to share from the host, you can use `~/.fonts` also`~/.themes` and `~/.icons`.
 
 ### Installing yay AUR Helper
-Just run this in chroot environment <kbd>`--enter`</kbd>:
+Just run this in chroot environment <kbd>--enter</kbd>:
 ```bash
 $ git clone https://aur.archlinux.org/yay-bin.git && cd ./yay-bin && makepkg -si && cd .. && rm -rf yay-bin
 ```
