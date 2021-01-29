@@ -301,7 +301,9 @@ Host Environment|Chroot Environment
 ![Gentoo](https://i.ibb.co/K5g3qQK/2021-01-04-052216-1366x768-scrot.png)|![Arch](https://i.ibb.co/GxrzJT0/2021-01-09-060959-1366x768-scrot.png)
 
 ## :gun: Uninstall Archroot completely
-The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems). If you forget it, you will be notified by `install.sh` script when you run `install.sh --uninstall`.
+The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems).
+
+If you forget it, relax. You will be notified by `install.sh` script when you run `install.sh --uninstall`.
 ```bash
 $ sudo install.sh --uninstall
 ```
