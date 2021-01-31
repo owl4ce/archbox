@@ -122,7 +122,7 @@ $ archroot -u
 $ archroot -e
 ```
 
-### Executing commands chroot environment directly
+### Executing chroot's commands directly
 ```bash
 $ archroot commands
 ```
