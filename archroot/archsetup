@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 L_USER="$(cat /tmp/archroot_localuser)"
 
-err() { echo "$(tput bold)$(tput setaf 1)==> Error:$(tput sgr0) $@" && exit 1; }
-msg() { echo "$(tput bold)$(tput setaf 2)==> $@ $(tput sgr0)"; }
+err() { echo -e "\033[1;31m==> Error:\033[0m $@" && exit 1; }
+msg() { echo -e "\033[1;32m==> $@ \033[0m"; }
 
 msg "Initializing pacman keyrings..."
 pacman-key --init
