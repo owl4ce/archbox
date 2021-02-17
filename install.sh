@@ -2,30 +2,30 @@
 
 asroot() { [[ $EUID -ne 0 ]] && err "Run this as root!"; }
 checkdep() { command -v $1 > /dev/null 2>&1 || err "$1 is not installed. Please install it first!"; }
-err() { echo -e "\033[1;31m==> Error:\033[0m $@" && exit 1; }
-msg() { echo -e "\033[1;32m==> $@ \033[0m"; }
+err() { echo -e "\e[1;31m==> Error:\e[0m $@" && exit 1; }
+msg() { echo -e "\e[1;32m==> $@ \e[0m"; }
 
 asroot
 
 case $1 in
     -u|--uninstall)
-        [[ -f "$(command -v archroot 2> /dev/null)" ]] && source /etc/archroot.conf && clear && \
+        [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && source /etc/archroot.conf && clear && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
-            $(command -v archroot) -s 2> /dev/null
+            $(command -v "archroot") -s 2> /dev/null
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
             err "Exiting... to anticipate damaged host system!"
         else
-            [[ -f "$(command -v archroot 2> /dev/null)" ]] && clear && \
-            $(command -v archroot) -s 2> /dev/null
+            [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && clear && \
+            $(command -v "archroot") -s 2> /dev/null
             while true; do
             msg "This will remove following"
-            echo "$(command -v archroot 2> /dev/null)"
+            echo "$(command -v "archroot" 2> /dev/null)"
             echo "$INSTALL_PATH/*"
             echo "/etc/archroot.conf"
             read -p $'\e[1;32m==> Are you sure you want to uninstall Archroot? \e[1;35m(y/n)\e[0m ' yn
                 case $yn in
                     [Yy]* ) msg "Uninstalling Archroot..."
-                            rm -v $(command -v archroot 2> /dev/null)
+                            rm -v $(command -v "archroot" 2> /dev/null)
                             rm -rv $INSTALL_PATH
                             rm -v /etc/archroot.conf
                             break;;
@@ -36,22 +36,22 @@ case $1 in
             msg "Archroot uninstalled successfully"
         fi
     ;;
-    *)  if [[ -f "$(command -v archroot 2> /dev/null)" ]]; then
+    *)  if [[ -f "$(command -v "archroot" 2> /dev/null)" ]]; then
             while true; do
             msg "Archroot already installed"
-            read -p $'\e[1;32m==> Are you sure you want to reinstall/upgrade? \e[1;33m(except archroot.conf) \e[1;35m(y/n)\e[0m ' yn
+            read -p $'\e[1;32m==> Are you sure you want to reinstall/upgrade? \e[0mexcept archroot.conf \e[1;35m(y/n)\e[0m ' yn
                 case $yn in
                     [Yy]* ) clear
                             source /etc/archroot.conf
                             msg "Installing files..."
                             # DONT CHANGE THIS
-                            install -v -D -m 755 ./archroot/archroot $(command -v archroot 2> /dev/null)
+                            install -v -D -m 755 ./archroot/archroot $(command -v "archroot" 2> /dev/null)
                             install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
                             install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
                             install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
-                            msg "Installation was successful (upgraded)"
+                            msg "Installation was successful \e[1;35m(upgraded)"
                             echo ""
-                            $(command -v archroot) 2> /dev/null
+                            $(command -v "archroot") 2> /dev/null
                             echo ""
                             break;;
                     [Nn]* ) exit;;
@@ -78,9 +78,8 @@ case $1 in
             install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
             install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
             rm ./archroot/archroot.conf_new &> /dev/null
-            msg "Installation was successful"
-            echo ""
-            $(command -v archroot) 2> /dev/null
+            msg "Installation was successful\n"
+            $(command -v "archroot") 2> /dev/null
             echo ""
         fi
     ;;

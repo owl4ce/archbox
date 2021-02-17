@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-L_USER="$(cat /tmp/archroot_localuser)"
+L_USER="$(cat /tmp/archroot_localuser 2> /dev/null)"
 
-err() { echo -e "\033[1;31m==> Error:\033[0m $@" && exit 1; }
-msg() { echo -e "\033[1;32m==> $@ \033[0m"; }
+err() { echo -e "\e[1;31m==> Error:\e[0m $@" && exit 1; }
+msg() { echo -e "\e[1;32m==> $@ \e[0m"; }
 
 msg "Initializing pacman keyrings..."
 pacman-key --init
@@ -40,6 +40,7 @@ echo "Enter new password for $L_USER"
 while true; do
 	passwd $L_USER && break
 done
+
 sed -i 's_# %wheel ALL=(ALL) NOPASSWD: ALL_%wheel ALL=(ALL) NOPASSWD: ALL_' /etc/sudoers
 touch /etc/archroot
 

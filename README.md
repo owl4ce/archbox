@@ -1,6 +1,6 @@
 <p align="center"><a name="top" href="#octocat-why-chroot-"><img width="60%" src="https://i.ibb.co/DgDn47J/archroot.png"></a></p>
 <p align="center">Install Arch Linux inside chroot environment using same user environment</p>
-<p align="center"><b>This fork contains fancy and structured output</b></p>
+<p align="center"><b>This fork was rewritten with my customizations</b></p>
 <p align="center">Systemctl isn't working inside chroot environment, so it will automatically use <a href="https://github.com/lemniskett/servicectl">this</a> instead</p>
 <p align="center"><i>Not all services can run normally</i></p>
 
@@ -303,9 +303,9 @@ Host Environment|Chroot Environment
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems).
 
-If you forget it, relax. You will be notified by `install.sh` script when you run `install.sh -u`.
+If you forget it, relax. You will be notified when you run `install.sh -u`.
 ```bash
-$ sudo install.sh -u
+$ sudo ./install.sh -u
 ```
   
 <p align="center"><img src="./screenshots/uninstall.png"/></p>
