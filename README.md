@@ -19,6 +19,7 @@ Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 `bash` `tar` `wget/curl` `xorg-xhost`
 
 Easy, just clone and run `install.sh` as **root**. Next, you are asked to configure **local username** in `archroot.conf`.
+> Assume that you are using [`sudo`](https://www.sudo.ws/) or [`doas`](https://github.com/Duncaen/OpenDoas).
 ```bash
 $ git clone https://github.com/owl4ce/archroot.git && cd archroot/ && sudo ./install.sh
 ```
@@ -51,19 +52,6 @@ Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd]
 17 VERBOSE_MSG="no"
 18 # Mount /run ?
 19 MOUNT_RUN="yes"
-```
-
-After installing, you will see a shell prompt when you enter Archroot environment.
-```bash
-$ archroot --enter
-(Archroot) $
-```
-
-You may experience the terminal getting weird when entering chroot environment. Yes, maybe because terminfo doesn't match or doesn't exist between host and chroot environment.
-
-The solution is to simply install `<terminal>-terminfo`, here I am using `rxvt-unicode`.
-```bash
-(Archroot) $ sudo pacman -S rxvt-unicode-terminfo
 ```
 
 ## :anchor: Usage
@@ -118,8 +106,17 @@ $ archroot -u
 </details>
 
 ### Entering chroot environment
+You will see a shell prompt when you enter Archroot environment.
 ```bash
-$ archroot -e
+$ archroot --enter
+(Archroot) $
+```
+
+You may experience the terminal getting weird when entering chroot environment. Yes, maybe because terminfo doesn't match or doesn't exist between host and chroot environment.
+
+The solution is to simply install `<terminal>-terminfo`, here I am using `rxvt-unicode`.
+```bash
+(Archroot) $ sudo pacman -S rxvt-unicode-terminfo
 ```
 
 ### Executing chroot's commands directly
@@ -191,7 +188,7 @@ permit nopass keepenv :wheel as root cmd /opt/archroot/command
 <summary><strong>Include pacman package manager from Archroot into neofetch host</strong></summary>
 
   ```bash
-  $ sudo $EDITOR `which neofetch`
+  $ sudo $EDITOR $(command -v neofetch)
   ```
   Then edit this section
   ```cfg
@@ -298,7 +295,7 @@ It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kb
 
 Host Environment|Chroot Environment
 |--|--|
-![Gentoo](https://i.ibb.co/K5g3qQK/2021-01-04-052216-1366x768-scrot.png)|![Arch](https://i.ibb.co/GxrzJT0/2021-01-09-060959-1366x768-scrot.png)
+<img src="https://i.ibb.co/0V96qvy/2021-02-21-001655-1366x768-scrot.png"/>|<img src="https://i.ibb.co/GxrzJT0/2021-01-09-060959-1366x768-scrot.png"/>
 
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems).
