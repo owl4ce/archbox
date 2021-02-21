@@ -77,7 +77,7 @@ case $1 in
             install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
             install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
             install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
-            rm ./archroot/archroot.conf_new &> /dev/null
+            rm -f ./archroot/archroot.conf_new &> /dev/null
             msg "Installation was successful\n"
             $(command -v "archroot") 2> /dev/null
             echo ""
