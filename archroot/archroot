@@ -19,15 +19,15 @@ else
     umount="umount"
 fi
 
-R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; NC="\e[1;0m"
+R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; W="\e[1;37m"; NC="\e[1;0m"
 
-checkdep() { command -v "$1" > /dev/null 2>&1 || err "${M}$1${NC} is not installed. Please install it first!"; }
+checkdep() { command -v "$1" > /dev/null 2>&1 || err "${M}$1${W} is not installed. Please install it first!${NC}"; }
 asroot() { [[ $EUID -ne 0 ]] && err "Run this as root!"; }
 copyresolv() { $PRIV $INSTALL_PATH/copyresolv; }
-err() { echo -e "${R}==> Error:${NC} $@"; exit 1; }
-msg() { echo -e "${G}==>${NC} $@"; }
-rd_msg() { echo -e "${R}==> Chroot API filesystems:${NC} $@"; }
-gr_msg() { echo -e "${G}==> Chroot API filesystems:${NC} $@"; }
+err() { echo -e "${R}==> Error:${W} $@${NC}"; exit 1; }
+msg() { echo -e "${G}==>${W} $@${NC}"; }
+rd_msg() { echo -e "${R}==> Chroot API filesystems:${W} $@${NC}"; }
+gr_msg() { echo -e "${G}==> Chroot API filesystems:${W} $@${NC}"; }
 msg_mnt() { echo -e "${G}*${NC} $@" "${G}[${NC} Mounted${G} ]${NC}"; }
 msg_mnt_rt() { echo -e "${G}*${NC} $@" "${G}[${NC} Runtime${G} ]${NC}"; }
 msg_umnt() { echo -e "${R}*${NC} $@" "${R}[${NC}Unmounted${R}]${NC}"; }

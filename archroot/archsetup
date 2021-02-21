@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 L_USER="$(cat /tmp/archroot_localuser 2> /dev/null)"
 
-R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; NC="\e[1;0m"
-err() { echo -e "${R}==> Error:${NC} $@"; exit 1; }
-msg() { echo -e "${G}==>${NC} $@"; }
+R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; W="\e[1;37m"; NC="\e[1;0m"
+err() { echo -e "${R}==> Error:${W} $@${NC}"; exit 1; }
+msg() { echo -e "${G}==>${W} $@${NC}"; }
 
 msg "Initializing pacman keyrings..."
 pacman-key --init

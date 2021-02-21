@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; NC="\e[1;0m"
+R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; W="\e[1;37m"; NC="\e[1;0m"
 
 asroot() { [[ $EUID -ne 0 ]] && err "Run this as root!"; }
-checkdep() { command -v "$1" > /dev/null 2>&1 || err "${M}$1${NC} is not installed. Please install it first!"; }
-err() { echo -e "${R}==> Error:${NC} $@"; exit 1; }
-msg() { echo -e "${G}==>${NC} $@"; }
+checkdep() { command -v "$1" > /dev/null 2>&1 || err "${M}$1${W} is not installed. Please install it first!${NC}"; }
+err() { echo -e "${R}==> Error:${W} $@${NC}"; exit 1; }
+msg() { echo -e "${G}==>${W} $@${NC}"; }
 yesno() { echo -n -e "${M}(${NC}y${M}/${NC}n${M})${NC} "; }
 
 asroot
