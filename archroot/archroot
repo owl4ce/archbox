@@ -185,11 +185,11 @@ case $1 in
         rm -f /tmp/archroot* &> /dev/null
     ;;
     -m|--mount)
-        if ! mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
-            gr_msg "Mounting..."
-            mnt_apifs
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
             archroot -s 2> /dev/null
         else
+            gr_msg "Mounting..."
+            mnt_apifs
             archroot -s 2> /dev/null
         fi
     ;;
@@ -245,7 +245,7 @@ case $1 in
         else
             rd_msg "Unmounted"
         fi
-        [[ $MOUNT_RUN != "yes" ]] && rd_msg "/run recursive mount option is disabled in /etc/archroot.conf"
+        [[ $MOUNT_RUN != "yes" ]] && rd_msg "/run recursive mount option is disabled in /etc/archroot.conf" || :
     ;;
     -e|--enter)
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
