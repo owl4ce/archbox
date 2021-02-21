@@ -161,7 +161,7 @@ case $1 in
             tar xzf archlinux.tar.gz 2> /dev/null
             msg "Enabling internet connection in chroot environment..."
             cp /etc/resolv.conf $CHROOT/etc/resolv.conf
-            msg "You will need to edit command -v mirror you want to use, uncomment needed mirrors and save it!"
+            msg "You will need to edit which mirror you want to use, uncomment needed mirrors and save it!"
             echo -n "Editor of your choice (e.g: nano): "
             read "TEXT_EDITOR"
             checkdep "$TEXT_EDITOR"
