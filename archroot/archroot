@@ -139,14 +139,14 @@ storeenv
 case $1 in
     -c|--create)
         asroot
+        if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
+            archroot -s
+            msg "Please unmount chroot API filesystems first to continue installing!"
+            err "Exiting... to anticipate damaged host system!"
+        fi
         if [[ ! -f "$INSTALL_PATH/root.x86_64/etc/archroot" ]]; then
             [[ -z "$2" ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
             cd "$INSTALL_PATH"
-            if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
-                archroot -s
-                msg "Please unmount chroot API filesystems first to continue installing!"
-                err "Exiting... to anticipate damaged host system!"
-            fi
             msg "Downloading Arch Linux tarball..."
             [[ ! -f "./archlinux.tar.gz" ]] && checkdep curl && \
             if [[ "$(command -v "wget" 2> /dev/null)" ]]; then
