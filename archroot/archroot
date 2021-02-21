@@ -20,6 +20,7 @@ else
 fi
 
 R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; NC="\e[1;0m"
+
 checkdep() { command -v "$1" > /dev/null 2>&1 || err "${M}$1${NC} is not installed. Please install it first!"; }
 asroot() { [[ $EUID -ne 0 ]] && err "Run this as root!"; }
 copyresolv() { $PRIV $INSTALL_PATH/copyresolv; }
@@ -132,12 +133,12 @@ umnt_apifs() {
 }
 
 redirx() { checkdep xhost && xhost +local: &> /dev/null; }
+
 storeenv
 
 case $1 in
     -c|--create)
         asroot
-        rm -f /tmp/archroot* &> /dev/null
         if [[ ! -f "$INSTALL_PATH/root.x86_64/etc/archroot" ]]; then
             [[ -z "$2" ]] && err "Specify the URL of Arch Linux bootstrap tarball!"
             cd "$INSTALL_PATH"
@@ -145,8 +146,6 @@ case $1 in
                 archroot -s
                 msg "Please unmount chroot API filesystems first to continue installing!"
                 err "Exiting... to anticipate damaged host system!"
-            else
-                rm -r "./root.x86_64"
             fi
             msg "Downloading Arch Linux tarball..."
             [[ ! -f "./archlinux.tar.gz" ]] && checkdep curl && \
@@ -183,6 +182,7 @@ case $1 in
         else
             err "Arch Linux already installed in $INSTALL_PATH/root.x86_64"
         fi
+        rm -f /tmp/archroot* &> /dev/null
     ;;
     -m|--mount)
         if ! mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" &> /dev/null; then
