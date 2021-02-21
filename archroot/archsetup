@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 L_USER="$(cat /tmp/archroot_localuser 2> /dev/null)"
 
-err() { echo -e "\e[1;31m==> Error:\e[0m $@" && exit 1; }
-msg() { echo -e "\e[1;32m==> $@ \e[0m"; }
+R="\e[1;31m"; G="\e[1;32m"; M="\e[1;35m"; NC="\e[1;0m"
+err() { echo -e "${R}==> Error:${NC} $@"; exit 1; }
+msg() { echo -e "${G}==>${NC} $@"; }
 
 msg "Initializing pacman keyrings..."
 pacman-key --init
 pacman-key --populate archlinux
 msg "Installing essential packages..."
-pacman -Syyu base base-devel xorg pulseaudio nano git --noconfirm
+pacman -Syyu base base-devel xorg imlib2 neofetch imagemagick w3m nano git --noconfirm
 msg "Installing servicectl..."
 mkdir -p /usr/local/share/servicectl/enabled
 curl -L "https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl" > /usr/local/share/servicectl/servicectl 2> /dev/null
@@ -40,7 +41,6 @@ echo "Enter new password for $L_USER"
 while true; do
 	passwd $L_USER && break
 done
-
 sed -i 's_# %wheel ALL=(ALL) NOPASSWD: ALL_%wheel ALL=(ALL) NOPASSWD: ALL_' /etc/sudoers
 touch /etc/archroot
 
@@ -48,19 +48,19 @@ touch /etc/archroot
 [[ -f /home/$L_USER/.bashrc ]] && echo "
 
 # Archroot Prompt
-[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"
-[[ -f /etc/archroot ]] && cd ~
+[[ -f \"/etc/archroot\" ]] && export PS1=\"(Archroot) \$PS1\" || :
+[[ -f \"/etc/archroot\" ]] && cd ~ || :
 " >> /home/$L_USER/.bashrc
 
 # ZSH Archroot Prompt
 [[ -f /home/$L_USER/.zshrc ]] && echo "
 
 # Archroot Prompt
-[[ -f /etc/archroot ]] && export PS1=\"(Archroot) \$PS1\"
-[[ -f /etc/archroot ]] && cd ~
+[[ -f \"/etc/archroot\" ]] && export PS1=\"(Archroot) \$PS1\" || :
+[[ -f \"/etc/archroot\" ]] && cd ~ || :
 " >> /home/$L_USER/.zshrc && \
 if cat /home/$L_USER/.zshrc | grep "oh-my-zsh.sh" &> /dev/null; then
     OMZ_CHK="$(grep "oh-my-zsh.sh" /home/$L_USER/.zshrc)"
     [[ $OMZ_CHK = *"oh-my-zsh.sh"* ]] && \
-    sed -i '/.*oh-my-zsh.sh/i [[ -f /etc/archroot ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot"' /home/$L_USER/.zshrc
+    sed -i '/.*oh-my-zsh.sh/i [[ -f /etc/archroot ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot" || :' /home/$L_USER/.zshrc
 fi
