@@ -9,7 +9,7 @@ msg "Initializing pacman keyrings..."
 pacman-key --init
 pacman-key --populate archlinux
 msg "Installing essential packages..."
-pacman -Syyu base base-devel xorg imlib2 neofetch imagemagick w3m nano git --noconfirm
+pacman -Syyu base base-devel xorg imlib2 neofetch w3m nano git --noconfirm
 msg "Installing servicectl..."
 mkdir -p /usr/local/share/servicectl/enabled
 curl -L "https://raw.githubusercontent.com/lemniskett/servicectl/master/servicectl" > /usr/local/share/servicectl/servicectl 2> /dev/null
@@ -62,5 +62,5 @@ touch /etc/archroot
 if cat /home/$L_USER/.zshrc | grep "oh-my-zsh.sh" &> /dev/null; then
     OMZ_CHK="$(grep "oh-my-zsh.sh" /home/$L_USER/.zshrc)"
     [[ $OMZ_CHK = *"oh-my-zsh.sh"* ]] && \
-    sed -i '/.*oh-my-zsh.sh/i [[ -f /etc/archroot ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot" || :' /home/$L_USER/.zshrc
+    sed -i '/.*oh-my-zsh.sh/i [[ -f "/etc/archroot" ]] && ZSH_COMPDUMP="$HOME/.zcompdump-archroot" || :' /home/$L_USER/.zshrc
 fi
