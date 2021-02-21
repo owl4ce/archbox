@@ -154,7 +154,7 @@ case $1 in
             elif [[ "$(command -v "curl" 2> /dev/null)" ]]; then
                 curl -L "$2" -o archlinux.tar.gz
             else
-                err "There's no ${M}wget${NC} or ${M}curl${NC} installed."
+                err "There's no ${M}wget${W} or ${M}curl${W} installed."
             fi
             [[ -f "./archlinux.tar.gz" ]] && msg "Arch Linux tarball downloaded"
             msg "Extracting the tarball..."
