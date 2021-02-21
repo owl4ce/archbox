@@ -30,7 +30,7 @@ $ git clone https://github.com/owl4ce/archroot.git && cd archroot/ && sudo ./ins
 #### Adding environment variables
 > Optional according to your needs
 
-Here is an example of `ENV_VAR` using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd):
+Here is an example of **`ENV_VAR`** using qt5ct as qt themer and enable [gtk3-nocsd](https://github.com/PCMan/gtk3-nocsd).
 ```cfg
 ...
 
