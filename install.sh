@@ -49,7 +49,7 @@ case $1 in
     *)  if [[ -f "$(command -v "archroot" 2> /dev/null)" ]]; then
             while true; do
             msg "Archroot already installed"
-            msg "${NC}Are you sure you want to reinstall/upgrade? Except archroot.conf"; yesno
+            msg "Are you sure you want to reinstall/upgrade? Except archroot.conf"; yesno
             read yn
                 case $yn in
                     [Yy]* ) printf "\033c"
@@ -60,7 +60,7 @@ case $1 in
                             install -v -D -m 755 ./archroot/copyresolv $INSTALL_PATH/copyresolv
                             install -v -D -m 755 ./archroot/command $INSTALL_PATH/command
                             install -v -D -m 755 ./archroot/archsetup $INSTALL_PATH/archsetup
-                            msg "Installation was successful ${M}[${NC}upgraded${M}]${NC}\n"; break;;
+                            msg "Installation was successful ${M}[${W}upgraded${M}]${NC}\n"; break;;
                     [Nn]* ) exit;;
                     * ) err "Please answer yes or no!";;
                 esac
