@@ -9,13 +9,13 @@ asroot
 
 case $1 in
     -u|--uninstall)
-        [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && source /etc/archroot.conf && clear && \
+        [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && source /etc/archroot.conf && printf "\033c" && \
         if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
             $(command -v "archroot") -s 2> /dev/null
             msg "Please unmount chroot API filesystems first to continue uninstalling!"
             err "Exiting... to anticipate damaged host system!"
         else
-            [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && clear && \
+            [[ -f "$(command -v "archroot" 2> /dev/null)" ]] && printf "\033c" && \
             $(command -v "archroot") -s 2> /dev/null
             while true; do
             msg "This will remove following"
@@ -41,7 +41,7 @@ case $1 in
             msg "Archroot already installed"
             read -p $'\e[1;32m==> Are you sure you want to reinstall/upgrade? \e[0mexcept archroot.conf \e[1;35m(y/n)\e[0m ' yn
                 case $yn in
-                    [Yy]* ) clear
+                    [Yy]* ) printf "\033c"
                             source /etc/archroot.conf
                             msg "Installing files..."
                             # DONT CHANGE THIS
@@ -59,7 +59,7 @@ case $1 in
                 esac
             done
         else
-            clear
+            printf "\033c"
             msg "The basic configuration is as follows"
             cat ./archroot/archroot.conf
             msg "First, specify the local username, etc."
@@ -68,7 +68,7 @@ case $1 in
             checkdep $TEXT_EDITOR
             cp ./archroot/archroot.conf ./archroot/archroot.conf_new &> /dev/null
             $TEXT_EDITOR ./archroot/archroot.conf_new || exit 1
-            source ./archroot/archroot.conf_new && clear
+            source ./archroot/archroot.conf_new && printf "\033c"
             msg "Installing files..."
             # DONT CHANGE THIS
             mkdir -p $INSTALL_PATH &> /dev/null
