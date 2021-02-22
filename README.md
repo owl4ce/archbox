@@ -295,7 +295,7 @@ It will use rofi apps configuration as Archroot launcher, press <kbd>Alt + R</kb
 
 Host Environment|Chroot Environment
 |--|--|
-<img src="https://i.ibb.co/0V96qvy/2021-02-21-001655-1366x768-scrot.png"/>|<img src="https://i.ibb.co/GxrzJT0/2021-01-09-060959-1366x768-scrot.png"/>
+<img src="https://i.ibb.co/0V96qvy/2021-02-21-001655-1366x768-scrot.png"/>|<img src="https://i.ibb.co/0B23FwJ/2021-02-22-011943-1366x768-scrot.png"/>
 
 ## :gun: Uninstall Archroot completely
 The most important thing here is don't forget to unmount the chroot environment API filesystems, otherwise the host system will be deleted in the same shared directory (API filesystems).
