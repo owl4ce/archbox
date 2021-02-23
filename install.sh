@@ -13,13 +13,13 @@ asroot
 case $1 in
     -u|--uninstall)
         if [[ "$(command -v "archroot" 2> /dev/null)" ]]; then
-            source /etc/archroot.conf && printf "\033c"
+            source /etc/archroot.conf && printf "\ec"
             if mount | grep -E "$CHROOT/dev|$CHROOT/home|$CHROOT/usr/lib/modules|$CHROOT/proc|$CHROOT/run|$CHROOT/sys|$CHROOT/tmp|$CHROOT/var/lib/dbus" > /dev/null; then
                 archroot -s 2> /dev/null
                 msg "Please unmount chroot API filesystems first to continue uninstalling!"
                 err "Exiting... to anticipate damaged host system!"
             else
-                [[ "$(command -v "archroot" 2> /dev/null)" ]] && printf "\033c" && \
+                [[ "$(command -v "archroot" 2> /dev/null)" ]] && printf "\ec" && \
                 archroot -s 2> /dev/null
                 while true; do
                 msg "This will remove following"
@@ -52,7 +52,7 @@ case $1 in
             msg "Are you sure you want to reinstall/upgrade? Except archroot.conf"; yesno
             read yn
                 case $yn in
-                    [Yy]* ) printf "\033c"
+                    [Yy]* ) printf "\ec"
                             source /etc/archroot.conf
                             msg "Installing files..."
                             # DONT CHANGE THIS
@@ -66,7 +66,7 @@ case $1 in
                 esac
             done
         else
-            printf "\033c"
+            printf "\ec"
             msg "The basic configuration is as follows"
             cat ./archroot/archroot.conf
             msg "First, specify the local username, etc."
@@ -75,7 +75,7 @@ case $1 in
             checkdep "$TEXT_EDITOR"
             cp ./archroot/archroot.conf ./archroot/archroot.conf_new &> /dev/null
             $TEXT_EDITOR ./archroot/archroot.conf_new || exit 1
-            source ./archroot/archroot.conf_new && printf "\033c"
+            source ./archroot/archroot.conf_new && printf "\ec"
             msg "Installing files..."
             # DONT CHANGE THIS
             mkdir -p "$INSTALL_PATH" &> /dev/null
