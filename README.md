@@ -10,11 +10,11 @@
 
 <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/072e191f-a0a5-4be2-bc7a-55eb140b254f/de9ipq1-b1122b6b-6d37-43d6-a727-cf63df935e6d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvMDcyZTE5MWYtYTBhNS00YmUyLWJjN2EtNTVlYjE0MGIyNTRmXC9kZTlpcHExLWIxMTIyYjZiLTZkMzctNDNkNi1hNzI3LWNmNjNkZjkzNWU2ZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.tEYdZ6q3iLK_X3f4gQer7Sn23nWGk_lA9JsGThIIbis" alt="preview" align="right" width="400px">
 
-Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (actually not being comfortable) with installing wine (multilib/x86) on Gentoo/Linux, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR. [owl4ce](https://github.com/owl4ce) @ 2020
+Since I'm using a complex Linux distribution like Gentoo, there are several reasons why I should also use Arch Linux in a chroot environment. First, I had a hard time (actually not being comfortable) with installing wine (multilib/x86) on Gentoo/Linux, and using wine in Archroot instead. The second reason is of course Gentoo's repositories are lacking even though has overlay and I miss AUR.
 
-> now I don't use this anymore
+> [@owl4ce](https://github.com/owl4ce) @ 2020 (now I don't use this anymore)
 
-Thanks to [lemniskett](https://github.com/lemniskett) (original author)
+Thanks to [@lemniskett](https://github.com/lemniskett) (original author)
 
 ## :syringe: Installation 
 #### Dependencies
